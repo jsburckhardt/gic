@@ -1,0 +1,67 @@
+{
+	"name": "Getting Started",
+	"image": "mcr.microsoft.com/devcontainers/universal:2",
+	"hostRequirements": {
+	  "cpus": 4
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": true,
+			"configureZshAsDefaultShell": true,
+			"installOhMyZsh": true,
+			"installOhMyZshConfig": true,
+			"username": "automatic",
+			"userUid": "automatic",
+			"userGid": "automatic"
+		},
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+		"ghcr.io/devcontainers/features/azure-cli:1": {
+			"installBicep": true,
+			"version": "latest",
+            "extensions": "ml"
+		},
+		"ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence:0": {},
+		"ghcr.io/azure/azure-dev/azd:0": {
+			"version": "stable"
+		},
+        "ghcr.io/jsburckhardt/devcontainer-features/gitleaks:1": {}
+	},
+	"waitFor": "onCreateCommand",
+	// "updateContentCommand": "python3 -m pip install -r requirements.txt",
+	"postCreateCommand": ".devcontainer/post_create.sh",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-azuretools.vscode-docker",
+				"yzhang.markdown-all-in-one",
+				"eamodio.gitlens",
+				"GitHub.copilot",
+				"Gruntfuggly.todo-tree",
+				"ionutvmi.path-autocomplete",
+				"mechatroner.rainbow-csv",
+				"ms-vsliveshare.vsliveshare",
+				"redhat.vscode-yaml",
+				"timonwong.shellcheck",
+				"GitHub.vscode-pull-request-github",
+				"humao.rest-client",
+				"ms-azuretools.vscode-bicep",
+				"DavidAnson.vscode-markdownlint",
+				"streetsidesoftware.code-spell-checker"
+			],
+			"settings": {
+				"files.insertFinalNewline": true,
+				"github.copilot.enable": {
+					"markdown": "true"
+				}
+			}
+		}
+	},
+	"remoteEnv": {
+        "HOST_PROJECT_PATH": "${localWorkspaceFolder}"
+    },
+	"mounts": [
+		// map host ssh to container
+		"source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/codespace/.ssh,type=bind,consistency=cached"
+	]
+}
