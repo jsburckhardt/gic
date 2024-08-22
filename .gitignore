@@ -1,0 +1,38 @@
+# Go Binary
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go Test and Benchmark
+*.test
+*.prof
+
+# Go Coverage Profile
+*.cover
+
+# Go Build Output
+/build/
+
+# Go Vendor Directory
+/vendor/
+
+# Go Module Cache
+/.cache/
+
+# Go Generated Files
+*.pb.go
+*.pb.gw.go
+*.swagger.json
+*.swagger.yaml
+*.gen.go
+
+# Go Documentation
+/doc/
+/site/
+/.idea/
+
+# project
+.env
+.gic

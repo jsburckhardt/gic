@@ -1,0 +1,59 @@
+
+run:
+  timeout: 5m
+  tests: false
+  concurrency: 4
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+
+  govet:
+    enable-all: true
+    # settings:
+      # shadow: 
+      #   strict: true
+
+  revive:
+    enable-all-rules: true
+
+  staticcheck:
+    checks: ["all"]
+
+  gocyclo:
+    min-complexity: 10
+
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+
+  gosec:
+    severity: "medium"
+    confidence: "high"
+
+  dupl:
+    threshold: 100
+
+issues:
+  exclude-use-default: false
+  exclude-rules:
+    - linters:
+        - errcheck
+      text: "defer"
+
+linters:
+  enable:
+    - govet
+    - errcheck
+    - staticcheck
+    - gocyclo
+    - gosec
+  disable-all: false
+
+  fast: false
+
+output:
+  formats: 
+    - format: colored-line-number
+  sort-results: true

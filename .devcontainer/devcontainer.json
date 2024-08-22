@@ -1,39 +1,31 @@
 {
 	"name": "Getting Started",
-	"image": "mcr.microsoft.com/devcontainers/universal:2",
+	"image": "mcr.microsoft.com/devcontainers/go:dev-1.23",
 	"hostRequirements": {
 	  "cpus": 4
 	},
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
-			"installZsh": true,
 			"configureZshAsDefaultShell": true,
 			"installOhMyZsh": true,
-			"installOhMyZshConfig": true,
-			"username": "automatic",
-			"userUid": "automatic",
-			"userGid": "automatic"
+			"installOhMyZshConfig": true
 		},
 		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
-		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
 		"ghcr.io/devcontainers/features/azure-cli:1": {
-			"installBicep": true,
-			"version": "latest",
-            "extensions": "ml"
+			"installBicep": true
 		},
-		"ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence:0": {},
-		"ghcr.io/azure/azure-dev/azd:0": {
-			"version": "stable"
-		},
-        "ghcr.io/jsburckhardt/devcontainer-features/gitleaks:1": {}
+        // "ghcr.io/prulloac/devcontainer-features/ollama:1": {
+        //     "pull": "phi3"
+        // }
+
+		// "ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence:0": {},
 	},
 	"waitFor": "onCreateCommand",
 	// "updateContentCommand": "python3 -m pip install -r requirements.txt",
-	"postCreateCommand": ".devcontainer/post_create.sh",
+	// "postCreateCommand": ".devcontainer/post_create.sh",
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-azuretools.vscode-docker",
 				"yzhang.markdown-all-in-one",
 				"eamodio.gitlens",
 				"GitHub.copilot",
@@ -45,14 +37,13 @@
 				"timonwong.shellcheck",
 				"GitHub.vscode-pull-request-github",
 				"humao.rest-client",
-				"ms-azuretools.vscode-bicep",
 				"DavidAnson.vscode-markdownlint",
 				"streetsidesoftware.code-spell-checker"
 			],
 			"settings": {
 				"files.insertFinalNewline": true,
 				"github.copilot.enable": {
-					"markdown": "true"
+					"markdown": true
 				}
 			}
 		}
@@ -62,6 +53,6 @@
     },
 	"mounts": [
 		// map host ssh to container
-		"source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/codespace/.ssh,type=bind,consistency=cached"
+		"source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
 	]
 }

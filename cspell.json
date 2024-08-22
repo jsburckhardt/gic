@@ -13,7 +13,7 @@
         "cspell-dictionary"
     ],
     "ignorePaths": [
-        "node_modules",
+        "*.go",
         ".**"
     ],
     "ignoreRegExpList": [
