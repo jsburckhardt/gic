@@ -1,0 +1,37 @@
+{
+    "ci": false,
+    "branches": [
+        "main"
+    ],
+    "plugins": [
+        "@semantic-release/commit-analyzer",
+        [
+            "@semantic-release/exec",
+            {
+                "publishCmd": "./build/scripts/release.sh ${nextRelease.version}"
+            }
+        ],
+        "@semantic-release/release-notes-generator",
+        "@semantic-release/changelog",
+        "@semantic-release/git",
+        [
+            "@semantic-release/github",
+            {
+                "assets": [
+                    {
+                        "path": "imp-linux-amd64",
+                        "label": "imp-linux-amd64"
+                    },
+                    {
+                        "path": "imp-linux-arm64",
+                        "label": "imp-linux-arm64"
+                    },
+                    {
+                        "path": "build/scripts/install.sh",
+                        "label": "Linux Installer"
+                    }
+                ]
+            }
+        ]
+    ]
+}
