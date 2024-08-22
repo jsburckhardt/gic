@@ -130,29 +130,65 @@ func validateConfig(cfg config.Config) error {
 		fmt.Println("LLMInstructions not set in config. Using default instructions.")
 		cfg.LLMInstructions = "You are a helpful assistant, that helps generating commit messages based on git diffs."
 	}
-	// if connection is azure or openai validate environment variable exists
+
+	if err := validateAPIKey(cfg); err != nil {
+		return err
+	}
+
+	if err := validateAzureEndpoint(cfg); err != nil {
+		return err
+	}
+
+	if err := validateTokens(cfg); err != nil {
+		return err
+	}
+
+	if err := validateModelDeploymentName(cfg); err != nil {
+		return err
+	}
+
+	if err := validateApiVersion(cfg); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func validateAPIKey(cfg config.Config) error {
 	if cfg.ConnectionType == "azure" || cfg.ConnectionType == "openai" {
 		if os.Getenv("API_KEY") == "" {
 			return fmt.Errorf("API_KEY environment variable not set")
 		}
 	}
-	// if connection is azure/azure_ad validate azure endpoint
+	return nil
+}
+
+func validateAzureEndpoint(cfg config.Config) error {
 	if cfg.ConnectionType == "azure" || cfg.ConnectionType == "azure_ad" {
 		if cfg.AzureEndpoint == "" {
 			return fmt.Errorf("AzureEndpoint not set in config")
 		}
 	}
-	// if tokens is empty set to default value
+	return nil
+}
+
+func validateTokens(cfg config.Config) error {
 	if cfg.Tokens == 0 {
 		fmt.Println("Tokens not set in config. Using default value 4000.")
 		cfg.Tokens = 4000
 	}
-	// if model deployment name is empty set to default value
+	return nil
+}
+
+func validateModelDeploymentName(cfg config.Config) error {
 	if cfg.ModelDeploymentName == "" {
 		fmt.Println("ModelDeploymentName not set in config. Using default value gpt-4o.")
 		cfg.ModelDeploymentName = "gpt-4o"
 	}
-	// if api version is empty set to default value
+	return nil
+}
+
+func validateApiVersion(cfg config.Config) error {
 	if cfg.ApiVersion == "" {
 		fmt.Println("ApiVersion not set in config. Using default value 2024-02-15-preview.")
 		cfg.ApiVersion = "2024-02-15-preview"
