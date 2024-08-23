@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "cmd/gic/main.go",
-            "cwd": "/workspaces/gic",
+            "cwd": "/workspaces/gic"
         }
     ]
 }

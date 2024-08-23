@@ -21,6 +21,11 @@ func main() {
 				log.Fatal(err)
 			}
 
+			err = config.ValidateConfig(cfg)
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			gitDiff, err := git.GetStagedChanges()
 			if err != nil {
 				log.Fatal(err)
@@ -33,7 +38,6 @@ func main() {
 			}
 
 			// retrieve the commit message
-			// if the connection type is azure/azure_ad
 			commitMessage, err := llm.GenerateCommitMessage(cfg, gitDiff)
 			if err != nil {
 				log.Fatal(err)
