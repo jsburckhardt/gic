@@ -45,6 +45,7 @@ issues:
 linters:
   enable:
     - govet
+    - revive
     - errcheck
     - staticcheck
     - gocyclo

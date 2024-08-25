@@ -1,17 +1,34 @@
-package main
+package cmd
 
 import (
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/jsburckhardt/gic/internal/config"
-	"github.com/jsburckhardt/gic/internal/git"
-	"github.com/jsburckhardt/gic/internal/llm"
+	"gic/internal/config"
+	"gic/internal/git"
+	"gic/internal/llm"
+
 	"github.com/spf13/cobra"
 )
 
-func main() {
+var (
+	hash    string
+	verbose bool
+
+	rootCmd = &cobra.Command{
+		Use:   "gic",
+		Short: "gic",
+		Long:  "gic generates git commit messages based on staged changes.",
+	}
+)
+
+func Execute(version, commit string) {
+	rootCmd.Version = version
+	hash = commit
+
+	setVersion()
+
 	var rootCmd = &cobra.Command{
 		Use:   "gic",
 		Short: "gic generates git commit messages based on staged changes.",
@@ -51,4 +68,14 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func setVersion() {
+	template := fmt.Sprintf("gic version: %s commit: %s \n", rootCmd.Version, hash)
+	rootCmd.SetVersionTemplate(template)
+}
+
+func init() {
+	cobra.OnInitialize()
+	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "set logging level to verbose")
 }

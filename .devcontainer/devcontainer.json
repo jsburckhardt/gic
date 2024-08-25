@@ -13,7 +13,7 @@
 		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
 		"ghcr.io/devcontainers/features/azure-cli:1": {
 			"installBicep": true
-		},
+		}
         // "ghcr.io/prulloac/devcontainer-features/ollama:1": {
         //     "pull": "phi3"
         // }
@@ -44,6 +44,35 @@
 				"files.insertFinalNewline": true,
 				"github.copilot.enable": {
 					"markdown": true
+				},
+				"go.toolsManagement.checkForUpdates": "local",
+				"go.useLanguageServer": true,
+				"go.gopath": "/go",
+				"go.lintTool": "revive",
+				"go.goroot": "/usr/local/go",
+				"go.lintFlags": [
+					"--fast"
+				],
+				"[go]": {
+					"editor.formatOnSave": true,
+					"editor.codeActionsOnSave": {
+						"source.organizeImports": "always"
+					},
+					// Optional: Disable snippets, as they conflict with completion ranking.
+					"editor.snippetSuggestions": "none"
+				},
+				"[go.mod]": {
+					"editor.formatOnSave": true,
+					"editor.codeActionsOnSave": {
+						"source.organizeImports": "always"
+					}
+				},
+				"gopls": {
+					// Add parameter placeholders when completing a function.
+					"usePlaceholders": true,
+					// If true, enable additional analyses with staticcheck.
+					// Warning: This will significantly increase memory usage.
+					"staticcheck": false
 				}
 			}
 		}

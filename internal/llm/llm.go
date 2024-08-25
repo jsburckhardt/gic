@@ -6,11 +6,12 @@ import (
 	"log"
 	"os"
 
+	"gic/internal/config"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
-	"github.com/jsburckhardt/gic/internal/config"
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
 )
