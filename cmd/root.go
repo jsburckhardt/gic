@@ -1,3 +1,4 @@
+// Package cmd provides the command-line interface for the gic application.
 package cmd
 
 import (
@@ -23,6 +24,7 @@ var (
 	}
 )
 
+// Execute runs the root command of the application.
 func Execute(version, commit string) {
 	rootCmd.Version = version
 	hash = commit
@@ -64,6 +66,7 @@ func Execute(version, commit string) {
 		},
 	}
 
+	// Execute the root command
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

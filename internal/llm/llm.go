@@ -37,6 +37,8 @@ func GenerateCommitMessage(cfg config.Config, diff string) (string, error) {
 	}
 }
 
+// GenerateCommitMessageAzure generates a commit message using the Azure Language Learning Model.
+// It takes an API key, a config.Config object, and a string representing the diff as input.
 func GenerateCommitMessageAzure(apikey string, cfg config.Config, diff string) (string, error) {
 	maxTokens := int32(cfg.Tokens)
 	keyCredential := azcore.NewKeyCredential(apikey)
@@ -97,6 +99,9 @@ func GenerateCommitMessageAzure(apikey string, cfg config.Config, diff string) (
 	return messageContent, nil
 }
 
+// GenerateCommitMessageAzureAD generates a commit message using the Azure Language Learning
+// Model with Azure Active Directory authentication.
+// It takes a config.Config object and a string representing the diff as input.
 func GenerateCommitMessageAzureAD(cfg config.Config, diff string) (string, error) {
 	maxTokens := int32(cfg.Tokens)
 	tokenCredential, err := azidentity.NewDefaultAzureCredential(nil)
@@ -162,6 +167,8 @@ func GenerateCommitMessageAzureAD(cfg config.Config, diff string) (string, error
 	return messageContent, nil
 }
 
+// GenerateCommitMessageOpenAI generates a commit message using the OpenAI Language Learning Model.
+// It takes an API key, a config.Config object, and a string representing the diff as input.
 func GenerateCommitMessageOpenAI(apiKey string, cfg config.Config, diff string) (string, error) {
 	client := openai.NewClient(
 		option.WithAPIKey(apiKey), // defaults to os.LookupEnv("OPENAI_API_KEY")
@@ -170,7 +177,7 @@ func GenerateCommitMessageOpenAI(apiKey string, cfg config.Config, diff string) 
 		Messages: openai.F([]openai.ChatCompletionMessageParamUnion{
 			openai.UserMessage(diff),
 		}),
-		Model: openai.F(openai.ChatModelGPT4),
+		Model: openai.F(cfg.ModelDeploymentName),
 	})
 	if err != nil {
 		panic(err.Error())
