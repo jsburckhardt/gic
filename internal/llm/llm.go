@@ -1,3 +1,4 @@
+// Package llm provides functionality for interacting with the Language Learning Model.
 package llm
 
 import (
@@ -16,6 +17,12 @@ import (
 	"github.com/openai/openai-go/option"
 )
 
+// GenerateCommitMessage generates a commit message based on the provided configuration and diff.
+// It takes a config.Config object and a string representing the diff as input.
+// The function returns a string containing the generated commit message and an error if any.
+// The commit message is generated based on the connection type specified in the config.Config object.
+// Supported connection types are "azure", "azure_ad", and "openai".
+// If the connection type is not supported, the function returns an empty string and an error indicating the unsupported connection type.
 func GenerateCommitMessage(cfg config.Config, diff string) (string, error) {
 	apikey := os.Getenv("API_KEY")
 	switch cfg.ConnectionType {

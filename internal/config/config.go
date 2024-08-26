@@ -1,3 +1,4 @@
+// Package config provides functionality for managing configuration settings.
 package config
 
 import (
@@ -7,9 +8,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Config represents the configuration structure for the application.
 type Config struct {
 	ModelDeploymentName string `mapstructure:"model_deployment_name"`
-	ApiVersion          string `mapstructure:"api_version"`
+	APIVersion          string `mapstructure:"api_version"`
 	LLMInstructions     string `mapstructure:"llm_instructions"`
 	ConnectionType      string `mapstructure:"connection_type"`
 	AzureEndpoint       string `mapstructure:"azure_endpoint"`
@@ -17,6 +19,7 @@ type Config struct {
 	Tokens              int    `mapstructure:"tokens"`
 }
 
+// LoadConfig loads the configuration from a YAML file and returns a Config struct.
 func LoadConfig() (Config, error) {
 	var cfg Config
 
@@ -35,6 +38,7 @@ func LoadConfig() (Config, error) {
 	return cfg, nil
 }
 
+// ValidateConfig validates the configuration and returns an error if any validation fails.
 func ValidateConfig(cfg Config) error {
 	if cfg.LLMInstructions == "" {
 		fmt.Println("LLMInstructions not set in config. Using default instructions.")
@@ -57,7 +61,7 @@ func ValidateConfig(cfg Config) error {
 		return err
 	}
 
-	if err := validateApiVersion(cfg); err != nil {
+	if err := validateAPIVersion(cfg); err != nil {
 		return err
 	}
 
@@ -98,10 +102,10 @@ func validateModelDeploymentName(cfg Config) error {
 	return nil
 }
 
-func validateApiVersion(cfg Config) error {
-	if cfg.ApiVersion == "" {
+func validateAPIVersion(cfg Config) error {
+	if cfg.APIVersion == "" {
 		fmt.Println("ApiVersion not set in config. Using default value 2024-02-15-preview.")
-		cfg.ApiVersion = "2024-02-15-preview"
+		cfg.APIVersion = "2024-02-15-preview"
 	}
 	return nil
 }
