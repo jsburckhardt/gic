@@ -8,6 +8,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+const emptyString = ""
+const zeroTokens = 0
+const defaultTokens = 4000
+
 // Config represents the configuration structure for the application.
 type Config struct {
 	ModelDeploymentName string `mapstructure:"model_deployment_name"`
@@ -19,7 +23,8 @@ type Config struct {
 	Tokens              int    `mapstructure:"tokens"`
 }
 
-// LoadConfig loads the configuration from a YAML file and returns a Config struct.
+// LoadConfig loads the configuration from a YAML file and
+// returns a Config struct.
 func LoadConfig() (Config, error) {
 	var cfg Config
 
@@ -35,14 +40,20 @@ func LoadConfig() (Config, error) {
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return cfg, err
 	}
+	if err := validateConfig(cfg); err != nil {
+		return cfg, err
+	}
 	return cfg, nil
 }
 
-// ValidateConfig validates the configuration and returns an error if any validation fails.
-func ValidateConfig(cfg Config) error {
-	if cfg.LLMInstructions == "" {
-		fmt.Println("LLMInstructions not set in config. Using default instructions.")
-		cfg.LLMInstructions = "You are a helpful assistant, that helps generating commit messages based on git diffs."
+// ValidateConfig validates the configuration and returns an
+// error if any validation fails.
+func validateConfig(cfg Config) error {
+	_, _ = fmt.Println("Validating configuration...")
+	if cfg.LLMInstructions == emptyString {
+		_, _ = fmt.Println("LLMInstructions not set in config. Using default instructions.")
+		cfg.LLMInstructions = "You are a helpful assistant, " +
+			"that helps generating commit messages based on git diffs."
 	}
 
 	if err := validateAPIKey(cfg); err != nil {
@@ -61,16 +72,12 @@ func ValidateConfig(cfg Config) error {
 		return err
 	}
 
-	if err := validateAPIVersion(cfg); err != nil {
-		return err
-	}
-
-	return nil
+	return validateAPIVersion(cfg)
 }
 
 func validateAPIKey(cfg Config) error {
 	if cfg.ConnectionType == "azure" || cfg.ConnectionType == "openai" {
-		if os.Getenv("API_KEY") == "" {
+		if os.Getenv("API_KEY") == emptyString {
 			return fmt.Errorf("API_KEY environment variable not set")
 		}
 	}
@@ -79,7 +86,7 @@ func validateAPIKey(cfg Config) error {
 
 func validateAzureEndpoint(cfg Config) error {
 	if cfg.ConnectionType == "azure" || cfg.ConnectionType == "azure_ad" {
-		if cfg.AzureEndpoint == "" {
+		if cfg.AzureEndpoint == emptyString {
 			return fmt.Errorf("AzureEndpoint not set in config")
 		}
 	}
@@ -87,24 +94,24 @@ func validateAzureEndpoint(cfg Config) error {
 }
 
 func validateTokens(cfg Config) error {
-	if cfg.Tokens == 0 {
-		fmt.Println("Tokens not set in config. Using default value 4000.")
-		cfg.Tokens = 4000
+	if cfg.Tokens == zeroTokens {
+		_, _ = fmt.Println("Tokens not set in config. Using default value 4000.")
+		cfg.Tokens = defaultTokens
 	}
 	return nil
 }
 
 func validateModelDeploymentName(cfg Config) error {
-	if cfg.ModelDeploymentName == "" {
-		fmt.Println("ModelDeploymentName not set in config. Using default value gpt-4o.")
+	if cfg.ModelDeploymentName == emptyString {
+		_, _ = fmt.Println("ModelDeploymentName not set in config. Using default value gpt-4o.")
 		cfg.ModelDeploymentName = "gpt-4o"
 	}
 	return nil
 }
 
 func validateAPIVersion(cfg Config) error {
-	if cfg.APIVersion == "" {
-		fmt.Println("ApiVersion not set in config. Using default value 2024-02-15-preview.")
+	if cfg.APIVersion == emptyString {
+		_, _ = fmt.Println("ApiVersion not set in config. Using default value 2024-02-15-preview.")
 		cfg.APIVersion = "2024-02-15-preview"
 	}
 	return nil

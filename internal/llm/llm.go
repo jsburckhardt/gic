@@ -24,6 +24,11 @@ import (
 // Supported connection types are "azure", "azure_ad", and "openai".
 // If the connection type is not supported, the function returns an empty string and an error indicating the unsupported connection type.
 func GenerateCommitMessage(cfg config.Config, diff string) (string, error) {
+	// if diff is empty finish
+	if diff == "" {
+		return "### NO STAGED CHAGES ###", nil
+	}
+
 	apikey := os.Getenv("API_KEY")
 	switch cfg.ConnectionType {
 	case "azure":
@@ -75,33 +80,19 @@ func GenerateCommitMessageAzure(apikey string, cfg config.Config, diff string) (
 				fmt.Fprintf(os.Stderr, "  Error:%v\n", choice.ContentFilterResults.Error)
 			}
 
-			// TODO: Include in logger
-			// fmt.Fprintf(os.Stderr, "Content filter results\n")
-			// fmt.Fprintf(os.Stderr, "  Hate: sev: %v, filtered: %v\n", *choice.ContentFilterResults.Hate.Severity, *choice.ContentFilterResults.Hate.Filtered)
-			// fmt.Fprintf(os.Stderr, "  SelfHarm: sev: %v, filtered: %v\n", *choice.ContentFilterResults.SelfHarm.Severity, *choice.ContentFilterResults.SelfHarm.Filtered)
-			// fmt.Fprintf(os.Stderr, "  Sexual: sev: %v, filtered: %v\n", *choice.ContentFilterResults.Sexual.Severity, *choice.ContentFilterResults.Sexual.Filtered)
-			// fmt.Fprintf(os.Stderr, "  Violence: sev: %v, filtered: %v\n", *choice.ContentFilterResults.Violence.Severity, *choice.ContentFilterResults.Violence.Filtered)
 		}
 
-		// TODO: Include in logger
-		// if choice.Message != nil && choice.Message.Content != nil {
-		// 	fmt.Fprintf(os.Stderr, "Content[%d]: %s\n", *choice.Index, *choice.Message.Content)
-		// }
-
-		// TODO: Include in logger
-		// if choice.FinishReason != nil {
-		//// this choice's conversation is complete.
-		// 	fmt.Fprintf(os.Stderr, "Finish reason[%d]: %s\n", *choice.Index, *choice.FinishReason)
-		// }
 		messageContent = *choice.Message.Content
 	}
 
 	return messageContent, nil
 }
 
-// GenerateCommitMessageAzureAD generates a commit message using the Azure Language Learning
-// Model with Azure Active Directory authentication.
-// It takes a config.Config object and a string representing the diff as input.
+// GenerateCommitMessageAzureAD generates a commit message using
+// the Azure Language Learning Model with Azure Active Directory
+// authentication.
+// It takes a config.Config object and a string representing
+// the diff as input.
 func GenerateCommitMessageAzureAD(cfg config.Config, diff string) (string, error) {
 	maxTokens := int32(cfg.Tokens)
 	tokenCredential, err := azidentity.NewDefaultAzureCredential(nil)

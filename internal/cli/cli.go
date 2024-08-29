@@ -2,7 +2,6 @@
 package cli
 
 import (
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -10,12 +9,14 @@ import (
 
 // LoadEnv loads environment variables from a .env file.
 // It attempts to load the .env file located in the current working directory.
-// If the file is not found or there is an error loading the file, it will cause a fatal error.
-func LoadEnv() {
+// If the file is not found or there is an error loading the file,
+// it will cause a fatal error.
+func LoadEnv() error {
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		return err
 	}
+	return nil
 }
 
 // GetAPIKey returns the API key from the environment variables.
@@ -23,7 +24,8 @@ func GetAPIKey() string {
 	return os.Getenv("API_KEY")
 }
 
-// GetAzureOpenAIEndpoint returns the Azure OpenAI endpoint from the environment variables.
+// GetAzureOpenAIEndpoint returns the Azure OpenAI endpoint
+// from the environment variables.
 func GetAzureOpenAIEndpoint() string {
 	return os.Getenv("AZURE_OPENAI_ENDPOINT")
 }
