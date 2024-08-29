@@ -11,5 +11,8 @@ var (
 )
 
 func main() {
-	cmd.Execute(version, commit)
+	err := cmd.Execute(version, commit)
+	if err != nil {
+		panic(err)
+	}
 }

@@ -3,8 +3,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
-	"os"
 
 	"gic/internal/config"
 	"gic/internal/git"
@@ -13,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const exitCodeFailure = 1
+// const exitCodeFailure = 1
 
 var (
 	hash    string
@@ -27,7 +25,7 @@ var (
 )
 
 // Execute runs the root command of the application.
-func Execute(version, commit string) {
+func Execute(version, commit string) error {
 	rootCmd.Version = version
 	hash = commit
 
@@ -36,34 +34,37 @@ func Execute(version, commit string) {
 	rootCmd = &cobra.Command{
 		Use:   "gic",
 		Short: "gic generates git commit messages based on staged changes.",
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			_ = cmd
 			_ = args
 			cfg, err := config.LoadConfig()
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 
 			gitDiff, err := git.GetStagedChanges()
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 
 			// retrieve the commit message
 			commitMessage, err := llm.GenerateCommitMessage(cfg, gitDiff)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 
 			_, _ = fmt.Println("Suggested Commit Message:", commitMessage)
+			return nil
 		},
 	}
 
 	// Execute the root command
 	if err := rootCmd.Execute(); err != nil {
-		log.Fatal(err)
-		os.Exit(exitCodeFailure)
+		// log.Fatal(err)
+		return err
+		// os.Exit(exitCodeFailure)
 	}
+	return nil
 }
 
 func setVersion() {
