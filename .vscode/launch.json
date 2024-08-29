@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "cmd/gic/main.go",
+            "program": "main.go",
             "cwd": "/workspaces/gic"
         }
     ]

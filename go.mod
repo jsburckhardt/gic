@@ -1,4 +1,4 @@
-module github.com/jsburckhardt/gic
+module gic
 
 go 1.23.0
 
@@ -7,6 +7,7 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.14.0
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.7.0
 	github.com/joho/godotenv v1.5.1
+	github.com/jsburckhardt/gic v1.0.0
 	github.com/openai/openai-go v0.1.0-alpha.9
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
