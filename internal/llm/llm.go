@@ -15,6 +15,8 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
+
+	"github.com/ollama/ollama/api"
 )
 
 const emptyString = ""
@@ -41,9 +43,48 @@ func GenerateCommitMessage(cfg config.Config, diff string) (string, error) {
 		return GenerateCommitMessageAzureAD(cfg, diff)
 	case "openai":
 		return GenerateCommitMessageOpenAI(apikey, cfg, diff)
+	case "ollama":
+		return GenerateCommitMessageOllama(cfg, diff)
 	default:
 		return emptyString, fmt.Errorf("unsupported connection type: %s", cfg.ConnectionType)
 	}
+}
+
+// GenerateCommitMessageOllama generates a commit message using an LLM hosted in Ollama.
+func GenerateCommitMessageOllama(cfg config.Config, diff string) (string, error) {
+	client, err := api.ClientFromEnvironment()
+	if err != nil {
+		return emptyString, err
+	}
+
+	messages := []api.Message{
+		{
+			Role:    "system",
+			Content: cfg.LLMInstructions,
+		},
+		{
+			Role:    "user",
+			Content: "git commit diff: " + diff,
+		},
+	}
+
+	ctx := context.Background()
+	req := &api.ChatRequest{
+		Model:    cfg.ModelDeploymentName,
+		Messages: messages,
+		Stream:   func(b bool) *bool { return &b }(false),
+	}
+
+	var commitMessage string
+	respFunc := func(resp api.ChatResponse) error {
+		commitMessage = resp.Message.Content
+		return nil
+	}
+	err = client.Chat(ctx, req, respFunc)
+	if err != nil {
+		return emptyString, err
+	}
+	return commitMessage, nil
 }
 
 // GenerateCommitMessageAzure generates a commit message using the Azure Language Learning Model.

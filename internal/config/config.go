@@ -19,7 +19,7 @@ type Config struct {
 	LLMInstructions     string `mapstructure:"llm_instructions"`
 	ConnectionType      string `mapstructure:"connection_type"`
 	AzureEndpoint       string `mapstructure:"azure_endpoint"`
-	Commit              bool   `mapstructure:"commit"`
+	ShouldCommit        bool   `mapstructure:"should_commit"`
 	Tokens              int    `mapstructure:"tokens"`
 }
 
@@ -49,9 +49,7 @@ func LoadConfig() (Config, error) {
 // ValidateConfig validates the configuration and returns an
 // error if any validation fails.
 func validateConfig(cfg Config) error {
-	_, _ = fmt.Println("Validating configuration...")
 	if cfg.LLMInstructions == emptyString {
-		_, _ = fmt.Println("LLMInstructions not set in config. Using default instructions.")
 		cfg.LLMInstructions = "You are a helpful assistant, " +
 			"that helps generating commit messages based on git diffs."
 	}
