@@ -67,8 +67,9 @@ jobs:
       # install goreleaser
       - name: Install goreleaser
         run: |
-          curl -sfL https://goreleaser.com/static/run | bash
-
+          echo 'deb [trusted=yes] https://repo.goreleaser.com/apt/ /' | sudo tee /etc/apt/sources.list.d/goreleaser.list
+          sudo apt update
+          sudo apt install goreleaser
       - name: Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
