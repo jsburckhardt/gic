@@ -50,10 +50,11 @@ func GenerateCommitMessage(cfg config.Config, diff string) (string, error) {
 	}
 }
 
+// GenerateCommitMessageOllama generates a commit message using an LLM hosted in Ollama.
 func GenerateCommitMessageOllama(cfg config.Config, diff string) (string, error) {
 	client, err := api.ClientFromEnvironment()
 	if err != nil {
-		log.Fatal(err)
+		return emptyString, err
 	}
 
 	messages := []api.Message{
@@ -74,16 +75,16 @@ func GenerateCommitMessageOllama(cfg config.Config, diff string) (string, error)
 		Stream:   func(b bool) *bool { return &b }(false),
 	}
 
-	var CommitMessage string
+	var commitMessage string
 	respFunc := func(resp api.ChatResponse) error {
-		CommitMessage = resp.Message.Content
+		commitMessage = resp.Message.Content
 		return nil
 	}
 	err = client.Chat(ctx, req, respFunc)
 	if err != nil {
-		return "", err
+		return emptyString, err
 	}
-	return CommitMessage, nil
+	return commitMessage, nil
 }
 
 // GenerateCommitMessageAzure generates a commit message using the Azure Language Learning Model.

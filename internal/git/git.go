@@ -3,6 +3,7 @@ package git
 
 import (
 	"fmt"
+	"gic/internal/config"
 	"os/exec"
 )
 
@@ -20,14 +21,15 @@ func GetStagedChanges() (string, error) {
 
 // Commit commits the staged changes with the generated message.
 // it will only print the message unless commit is set to true.
-func Commit(message string, commit bool) error {
+func Commit(message string, cfg config.Config) error {
+	var err error
 	cmd := exec.Command("git", "commit", "-m", message)
-	if commit {
-		if err := cmd.Run(); err != nil {
+	if cfg.ShouldCommit {
+		if err = cmd.Run(); err != nil {
 			return err
 		}
 	} else {
-		fmt.Println("Suggested commit message:" + message)
+		_, err = fmt.Println("Suggested commit message:\n" + message)
 	}
-	return nil
+	return err
 }

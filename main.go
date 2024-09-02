@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	version = "edge"
+	version = "local"
 	commit  = "n/a"
 )
 

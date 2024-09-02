@@ -31,39 +31,33 @@ func Execute(version, commit string) error {
 
 	setVersion()
 
-	rootCmd = &cobra.Command{
-		Use:   "gic",
-		Short: "gic generates git commit messages based on staged changes.",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			_ = cmd
-			_ = args
-			cfg, err := config.LoadConfig()
-			if err != nil {
-				return err
-			}
+	rootCmd.RunE = executeCmd
 
-			gitDiff, err := git.GetStagedChanges()
-			if err != nil {
-				return err
-			}
+	return rootCmd.Execute()
+}
 
-			// retrieve the commit message
-			commitMessage, err := llm.GenerateCommitMessage(cfg, gitDiff)
-			if err != nil {
-				return err
-			}
-
-			return git.Commit(commitMessage, cfg.Commit)
-		},
-	}
-
-	// Execute the root command
-	if err := rootCmd.Execute(); err != nil {
-		// log.Fatal(err)
+func executeCmd(cmd *cobra.Command, args []string) error {
+	_ = cmd
+	_ = args
+	cfg, err := config.LoadConfig()
+	if err != nil {
 		return err
-		// os.Exit(exitCodeFailure)
 	}
-	return nil
+
+	gitDiff, err := git.GetStagedChanges()
+	if err != nil {
+		return err
+	}
+
+	commitMessage, err := llm.GenerateCommitMessage(cfg, gitDiff)
+	if err != nil {
+		return err
+	}
+	if commitMessage == "### NO STAGED CHAGES ###" {
+		return nil
+	}
+
+	return git.Commit(commitMessage, cfg)
 }
 
 func setVersion() {
