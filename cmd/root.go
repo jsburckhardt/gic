@@ -53,7 +53,6 @@ func Execute(version, commit string) error {
 				return err
 			}
 
-			// _, _ = fmt.Println("Suggested Commit Message:", commitMessage)
 			return git.Commit(commitMessage, cfg.Commit)
 		},
 	}
