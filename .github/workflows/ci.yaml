@@ -64,6 +64,11 @@ jobs:
         with:
           node-version: "lts/*"
 
+      # install goreleaser
+      - name: Install goreleaser
+        run: |
+          curl -sfL https://goreleaser.com/static/run | bash
+
       - name: Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
