@@ -20,8 +20,10 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
-      - windows
       - darwin
+
+sboms:
+  - artifacts: archive
 
 archives:
   - format: tar.gz
