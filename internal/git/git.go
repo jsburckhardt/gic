@@ -27,6 +27,7 @@ func Commit(message string, cfg config.Config) error {
 	cmd := exec.Command("git", "commit", "-m", message)
 	if cfg.ShouldCommit {
 		l.Debug("ShouldCommit True. Committing changes...")
+		l.Debug("Commit message: " + message)
 		if err = cmd.Run(); err != nil {
 			return err
 		}
