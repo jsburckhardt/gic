@@ -3,6 +3,7 @@ package main
 
 import (
 	"gic/cmd"
+	"gic/internal/logger"
 )
 
 var (
@@ -11,8 +12,11 @@ var (
 )
 
 func main() {
+	logger.InitLogger()
+	l := logger.GetLogger()
 	err := cmd.Execute(version, commit)
 	if err != nil {
+		l.Error("failed to execute command", "error", err)
 		panic(err)
 	}
 }
