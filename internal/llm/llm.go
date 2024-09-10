@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"gic/internal/config"
+	"gic/internal/logger"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
@@ -30,8 +31,11 @@ const responseMessage = 0
 // If the connection type is not supported, the function returns an empty string and an error
 // indicating the unsupported connection type.
 func GenerateCommitMessage(cfg config.Config, diff string) (string, error) {
+	l := logger.GetLogger()
+	l.Info("Generating commit message")
 	// if diff is empty finish
 	if diff == emptyString {
+		l.Debug("No files staged for commit")
 		return "### NO STAGED CHAGES ###", nil
 	}
 

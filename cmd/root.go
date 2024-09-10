@@ -52,10 +52,10 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 	l.Debug("Started executing command")
 	l.Debug("Start loading configuration")
 	cfg, err := config.LoadConfig()
-	l.Debug("Finish loading configuration")
 	if err != nil {
 		return err
 	}
+	l.Debug("Finish loading configuration")
 
 	l.Debug("Start getting staged changes")
 	gitDiff, err := git.GetStagedChanges()
