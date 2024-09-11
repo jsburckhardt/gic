@@ -1,3 +1,17 @@
+# [2.1.0](https://github.com/jsburckhardt/gic/compare/v2.0.0...v2.1.0) (2024-09-11)
+
+
+### Bug Fixes
+
+* **git:** log commit message before committing changes ([28c0e56](https://github.com/jsburckhardt/gic/commit/28c0e563905f4b6bd41bc1fec30033b29b4d0736))
+
+
+### Features
+
+* **logger:** enhance logging mechanism with caller info and message formatting ([ca6d629](https://github.com/jsburckhardt/gic/commit/ca6d629a0529cde6f76c30ab16d5a204513e5f2e))
+* **logger:** enhance logging with caller information and control over source display ([cf84973](https://github.com/jsburckhardt/gic/commit/cf8497337a029783158cd20f7a8f47f797c8e747))
+* **logger:** implement structured logging with adjustable log levels ([7ea38b1](https://github.com/jsburckhardt/gic/commit/7ea38b18156c49a314328b84e99e9a23f6d02e2b))
+
 # [2.0.0](https://github.com/jsburckhardt/gic/compare/v1.1.0...v2.0.0) (2024-09-02)
 
 
