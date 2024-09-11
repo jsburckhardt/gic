@@ -3,6 +3,7 @@ package config
 
 import (
 	"fmt"
+	"gic/internal/logger"
 	"os"
 
 	"github.com/spf13/viper"
@@ -11,6 +12,7 @@ import (
 const emptyString = ""
 const zeroTokens = 0
 const defaultTokens = 4000
+const defaultInstructions = "You are a helpful assistant, that helps generating commit messages based on git diffs."
 
 // Config represents the configuration structure for the application.
 type Config struct {
@@ -26,32 +28,40 @@ type Config struct {
 // LoadConfig loads the configuration from a YAML file and
 // returns a Config struct.
 func LoadConfig() (Config, error) {
+	l := logger.GetLogger()
 	var cfg Config
 
+	l.Debug("Current working directory: " + os.Getenv("PWD"))
 	viper.SetConfigName(".gic")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 
 	// print the path in which it is running
-
+	l.Debug("reading config from: " + os.Getenv("PWD") + "/.gic.yaml")
 	if err := viper.ReadInConfig(); err != nil {
 		return cfg, err
 	}
+	l.Debug("config file read successfully")
+	l.Debug("unmarshalling config")
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return cfg, err
 	}
+	l.Debug("config unmarshalled successfully")
+	l.Debug("validating config")
 	if err := validateConfig(cfg); err != nil {
 		return cfg, err
 	}
+	l.Debug("config validated successfully")
 	return cfg, nil
 }
 
 // ValidateConfig validates the configuration and returns an
 // error if any validation fails.
 func validateConfig(cfg Config) error {
+	l := logger.GetLogger()
 	if cfg.LLMInstructions == emptyString {
-		cfg.LLMInstructions = "You are a helpful assistant, " +
-			"that helps generating commit messages based on git diffs."
+		l.Debug("LLMInstructions not set in config. Using default value." + defaultInstructions)
+		cfg.LLMInstructions = defaultInstructions
 	}
 
 	if err := validateAPIKey(cfg); err != nil {
