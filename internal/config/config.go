@@ -62,7 +62,6 @@ func validateConfig(cfg Config) error {
 	if cfg.LLMInstructions == emptyString {
 		l.Debug("LLMInstructions not set in config. Using default value." + defaultInstructions)
 		cfg.LLMInstructions = defaultInstructions
-
 	}
 
 	if err := validateAPIKey(cfg); err != nil {

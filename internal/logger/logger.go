@@ -1,3 +1,4 @@
+// Package logger provides a logging utility for the application.
 package logger
 
 import (
@@ -7,6 +8,9 @@ import (
 	"runtime"
 )
 
+const infomationStack = 3
+
+// Logger represents the logger structure
 type Logger struct {
 	logger *slog.Logger
 }
@@ -23,6 +27,7 @@ func InitLogger() {
 	}
 }
 
+// SetLogLevel sets the log level of the logger
 func SetLogLevel(level string) {
 	var logLevel slog.Level
 	switch level {
@@ -41,8 +46,9 @@ func SetLogLevel(level string) {
 }
 
 func getCallerInfo() string {
-	// We skip 2 frames to get the caller of the function using the logger (skips this function and the logger method itself)
-	_, file, line, ok := runtime.Caller(2)
+	// We skip 2 frames to get the caller of the function using the logger
+	// (skips this function and the logger method itself)
+	_, file, line, ok := runtime.Caller(infomationStack)
 	if !ok {
 		return "unknown source"
 	}
@@ -56,18 +62,20 @@ func GetLogger() *Logger {
 
 // Debug logs a debug message
 func (l *Logger) Debug(msg string, keysAndValues ...any) {
-	callerInfo := getCallerInfo()
-	l.logger.Debug(fmt.Sprintf("[%s] %s", callerInfo, msg), keysAndValues...)
+	l.logger.Debug(generateLogMessage(msg), keysAndValues...)
 }
 
 // Info logs an info message
-func (l *Logger) Info(msg string, keysAndValues ...interface{}) {
-	callerInfo := getCallerInfo()
-	l.logger.Info(fmt.Sprintf("[%s] %s", callerInfo, msg), keysAndValues...)
+func (l *Logger) Info(msg string, keysAndValues ...any) {
+	l.logger.Info(generateLogMessage(msg), keysAndValues...)
 }
 
 // Error logs an error message with the correct source
-func (l *Logger) Error(msg string, keysAndValues ...interface{}) {
+func (l *Logger) Error(msg string, keysAndValues ...any) {
+	l.logger.Error(generateLogMessage(msg), keysAndValues...)
+}
+
+func generateLogMessage(msg string) string {
 	callerInfo := getCallerInfo()
-	l.logger.Error(fmt.Sprintf("[%s] %s", callerInfo, msg), keysAndValues...)
+	return fmt.Sprintf("[%s] %s", callerInfo, msg)
 }
