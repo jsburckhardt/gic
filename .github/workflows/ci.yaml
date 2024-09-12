@@ -41,10 +41,8 @@ jobs:
         with:
           go-version: 1.23
 
-      - name: Run Tests
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
-
+      # - name: Run Tests
+      #   run: |
       #     go test -v ./...
 
   release:
