@@ -1,3 +1,4 @@
+// Package cmd provides the command-line interface for the gic application.
 package cmd
 
 import (
@@ -18,7 +19,7 @@ var (
 		Use:   "gic",
 		Short: "gic",
 		Long:  "gic generates git commit messages based on staged changes.",
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		PersistentPreRunE: func(_ *cobra.Command, args []string) error {
 			// Set logger level based on the verbose flag
 			if verbose {
 				logger.SetLogLevel("debug")
