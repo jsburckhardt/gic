@@ -14,14 +14,14 @@
 			"installOhMyZsh": true,
 			"installOhMyZshConfig": true
 		},
-		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
 		"ghcr.io/devcontainers/features/azure-cli:1": {
 			"installBicep": true
 		},
         // "ghcr.io/prulloac/devcontainer-features/ollama:1": {
         //     "pull": "phi3.5"
         // }
-		"ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence:0": {},
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
+
 	},
 	"waitFor": "onCreateCommand",
 	// "updateContentCommand": "python3 -m pip install -r requirements.txt",

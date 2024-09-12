@@ -44,7 +44,7 @@ func GenerateCommitMessage(cfg config.Config, diff string) (string, error) {
 	case "azure":
 		return GenerateCommitMessageAzure(apikey, cfg, diff)
 	case "azure_ad":
-		return GenerateCommitMessageAzureAD(cfg, diff)
+		return GenerateCommitMessageAzureAD(cfg, diff, l)
 	case "openai":
 		return GenerateCommitMessageOpenAI(apikey, cfg, diff)
 	case "ollama":
@@ -109,9 +109,12 @@ func GenerateCommitMessageAzure(apikey string, cfg config.Config, diff string) (
 // authentication.
 // It takes a config.Config object and a string representing
 // the diff as input.
-func GenerateCommitMessageAzureAD(cfg config.Config, diff string) (string, error) {
+func GenerateCommitMessageAzureAD(cfg config.Config, diff string, l *logger.Logger) (string, error) {
+	l.Debug("GenerateCommitMessageAzureAD")
+	l.Debug("obtaining token credential")
 	tokenCredential, err := azidentity.NewDefaultAzureCredential(nil)
 	if err != nil {
+		l.Error("failed getting token", "error", err)
 		return emptyString, err
 	}
 	client, err := azopenai.NewClient(cfg.AzureEndpoint, tokenCredential, nil)

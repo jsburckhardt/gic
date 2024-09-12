@@ -1,6 +1,6 @@
 # GIt-Commit (gic)
 
-A tool that helps developers generate git commit messages based on the `git diff` of staged files, following specified instructions. It's ideal for use alongside [Semantic Release](https://github.com/semantic-release/semantic-release).
+Reducing cognitive load by automating commit message generation, allowing developers to focus on coding instead of crafting messages. A tool that helps developers generate git commit messages based on the `git diff` of staged files, following instructions. It's ideal for use alongside [Semantic Release](https://github.com/semantic-release/semantic-release).
 
 ## AzureAD
 
