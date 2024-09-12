@@ -71,7 +71,7 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 	if commitMessage == "### NO STAGED CHAGES ###" {
 		return nil
 	}
-	l.Info("Commit message: " + commitMessage)
+	l.Info("commit message: " + commitMessage)
 	l.Debug("Finish validating commit message includes changes")
 	return git.Commit(commitMessage, cfg)
 }
