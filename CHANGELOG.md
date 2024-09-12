@@ -1,3 +1,17 @@
+# [2.2.0](https://github.com/jsburckhardt/gic/compare/v2.1.0...v2.2.0) (2024-09-12)
+
+
+### Bug Fixes
+
+* **cmd:** correct string concatenation for commit message logging ([2ef6146](https://github.com/jsburckhardt/gic/commit/2ef61469e14bc4ffdf8a286dc0c1f1234f08ec82))
+* **cmd:** standardize log output for commit message formatting ([067b904](https://github.com/jsburckhardt/gic/commit/067b904c449b6843f5e953fe0dc83d747f91074f))
+
+
+### Features
+
+* **devcontainer, ci:** update devcontainer configuration and CI script ([5222f60](https://github.com/jsburckhardt/gic/commit/5222f60520140875506d8663551c72f02afe4068))
+* **logging:** add info log for commit messages before execution ([5ce4d61](https://github.com/jsburckhardt/gic/commit/5ce4d61b11eaf3c3154edd8f1180e557a6425531))
+
 # [2.1.0](https://github.com/jsburckhardt/gic/compare/v2.0.0...v2.1.0) (2024-09-11)
 
 
