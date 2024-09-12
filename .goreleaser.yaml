@@ -21,6 +21,9 @@ builds:
     goos:
       - linux
       - darwin
+      - windows
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}}
 
 sboms:
   - artifacts: archive
@@ -41,8 +44,4 @@ archives:
         format: zip
 
 changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
+  use: github-native
