@@ -19,7 +19,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.23
+          go-version: 1.23.0
 
       - name: Install golangci-lint
         run: |
@@ -28,28 +28,29 @@ jobs:
       - name: Run golangci-lint
         run: golangci-lint run
 
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    needs: lint
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+  # test:
+  #   name: Run Tests
+  #   runs-on: ubuntu-latest
+  #   needs: lint
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.23
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v5
+  #       with:
+  #         go-version: 1.23.0
 
-      # - name: Run Tests
-      #   run: |
-      #     go test -v ./...
+  # - name: Run Tests
+  #   run: |
+  #     go test -v ./...
 
   release:
     if: github.ref == 'refs/heads/main'
     name: Semantic Release
     runs-on: ubuntu-latest
-    needs: [lint, test]
+    # needs: [lint, test]
+    needs: lint
     permissions:
       contents: write # to be able to publish a GitHub release
       issues: write # to be able to comment on released issues
@@ -58,6 +59,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.23.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

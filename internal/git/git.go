@@ -31,8 +31,6 @@ func Commit(message string, cfg config.Config) error {
 		if err = cmd.Run(); err != nil {
 			return err
 		}
-	} else {
-		l.Info("Commit message: " + message)
 	}
-	return err
+	return nil
 }

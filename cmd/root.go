@@ -13,9 +13,10 @@ import (
 )
 
 var (
-	hash    string
-	verbose bool
-	rootCmd = &cobra.Command{
+	hash               string
+	verbose            bool
+	createSampleConfig bool
+	rootCmd            = &cobra.Command{
 		Use:   "gic",
 		Short: "gic",
 		Long:  "gic generates git commit messages based on staged changes.",
@@ -48,6 +49,15 @@ func Execute(version, commit string) error {
 
 func executeCmd(_ *cobra.Command, _ []string) error {
 	l := logger.GetLogger()
+	if createSampleConfig {
+		l.Debug("Started creating sample configuration")
+		err := config.CreateSampleConfig()
+		if err != nil {
+			return err
+		}
+		l.Debug("Finish creating sample configuration")
+		return nil
+	}
 	l.Debug("Started executing command")
 	l.Debug("Start loading configuration")
 	cfg, err := config.LoadConfig()
@@ -66,11 +76,12 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	l.Debug("Finish generating commit message")
-	l.Debug("Start validating commit message includes changes")
 	if commitMessage == "### NO STAGED CHAGES ###" {
 		return nil
 	}
+	l.Debug("Finish generating commit message")
+	l.Debug("Start validating commit message includes changes")
+
 	l.Info("commit message: " + commitMessage)
 	l.Debug("Finish validating commit message includes changes")
 	return git.Commit(commitMessage, cfg)
@@ -84,4 +95,11 @@ func setVersion() {
 func init() {
 	cobra.OnInitialize()
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "set logging level to verbose")
+	rootCmd.PersistentFlags().BoolVarP(
+		&createSampleConfig,
+		"create-sample-config",
+		"s",
+		false,
+		"create a sample configuration file in the running directory",
+	)
 }
