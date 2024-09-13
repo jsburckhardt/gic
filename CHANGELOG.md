@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/jsburckhardt/gic/compare/v2.3.0...v2.4.0) (2024-09-13)
+
+
+### Features
+
+* **docs, config, devcontainer:** enhance README and configuration for gic usage ([7bec5ab](https://github.com/jsburckhardt/gic/commit/7bec5ab4d38b94337dbbca79299de051603bbb83)), closes [#12345](https://github.com/jsburckhardt/gic/issues/12345)
+
 # [2.3.0](https://github.com/jsburckhardt/gic/compare/v2.2.0...v2.3.0) (2024-09-13)
 
 
