@@ -95,5 +95,11 @@ func setVersion() {
 func init() {
 	cobra.OnInitialize()
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "set logging level to verbose")
-	rootCmd.PersistentFlags().BoolVarP(&createSampleConfig, "create-sample-config", "s", false, "create a sample configuration file in the running directory")
+	rootCmd.PersistentFlags().BoolVarP(
+		&createSampleConfig,
+		"create-sample-config",
+		"s",
+		false,
+		"create a sample configuration file in the running directory",
+	)
 }

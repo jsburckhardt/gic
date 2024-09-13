@@ -125,6 +125,7 @@ func validateAPIVersion(cfg Config) error {
 	return nil
 }
 
+// CreateSampleConfig creates a sample configuration file.
 func CreateSampleConfig() error {
 	l := logger.GetLogger()
 	l.Debug("Creating sample configuration")
@@ -133,11 +134,13 @@ func CreateSampleConfig() error {
 	viper.AddConfigPath(".")
 	viper.Set("model_deployment_name", "gpt-4o")
 	viper.Set("api_version", "2024-02-15-preview")
-	viper.Set("llm_instructions", "You are a helpful assistant, that helps generating commit messages based on git diffs.")
+	viper.Set("llm_instructions",
+		"You are a helpful assistant, that helps generating commit messages based on git diffs.",
+	)
 	viper.Set("connection_type", "azure_ad")
 	viper.Set("azure_endpoint", "https://<my_resource>.openai.azure.com/")
 	viper.Set("should_commit", false)
-	viper.Set("tokens", 4000)
+	viper.Set("tokens", defaultTokens)
 	if err := viper.WriteConfigAs(".gic.yaml"); err != nil {
 		return err
 	}
