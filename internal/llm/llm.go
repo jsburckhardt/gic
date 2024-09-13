@@ -35,7 +35,7 @@ func GenerateCommitMessage(cfg config.Config, diff string) (string, error) {
 	l.Info("Generating commit message")
 	// if diff is empty finish
 	if diff == emptyString {
-		l.Debug("No files staged for commit")
+		l.Info("No files staged for commit")
 		return "### NO STAGED CHAGES ###", nil
 	}
 
