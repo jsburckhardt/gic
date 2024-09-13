@@ -137,6 +137,10 @@ There are two common ways to authenticate with AOAI resources. The first one is 
 
 ### Using LLMs hosted in Ollama Locally in your devcontainer (or any machine)
 
+>[!NOTE]
+>When using Ollama, it mounts the model to memory the first time you run it, which can take some time. After 5 minutes of inactivity, Ollama offloads the model.
+
+
 Here is an example to run `ollama` in your `devcontainer` and pulling phi3.5 image.
 
 ```json
