@@ -10,7 +10,8 @@
             "request": "launch",
             "mode": "auto",
             "program": "main.go",
-            "cwd": "/workspaces/gic"
+            "cwd": "/workspaces/gic",
+            "envFile": "${workspaceFolder}/.env",
         }
     ]
 }
