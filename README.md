@@ -7,7 +7,6 @@ Reducing cognitive load by automating commit message generation, allowing develo
 The flow is simple. Install the binary, create a config (`.gic` or `.gic.yaml`) file in your project root, and run `gic` in your terminal. The tool will generate a commit message based on the staged files and the instructions provided in the `.gic` file.
 
 ![flow](docs/flow.png)
-![alt text](image.png)
 
 ### Install the binary
 

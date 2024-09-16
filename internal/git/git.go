@@ -2,6 +2,7 @@
 package git
 
 import (
+	"bytes"
 	"gic/internal/config"
 	"gic/internal/logger"
 	"os/exec"
@@ -28,7 +29,10 @@ func Commit(message string, cfg config.Config) error {
 	if cfg.ShouldCommit {
 		l.Debug("ShouldCommit True. Committing changes...")
 		l.Debug("Commit message: " + message)
+		var stderr bytes.Buffer
+		cmd.Stderr = &stderr
 		if err = cmd.Run(); err != nil {
+			l.Error("Failed to commit changes", "error", err, "stderr", stderr.String())
 			return err
 		}
 	}
