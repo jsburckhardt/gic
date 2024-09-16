@@ -120,7 +120,7 @@ There are two common ways to authenticate with AOAI resources. The first one is 
     export API_KEY=<api_key>
     ```
 
-- **azure_ad**: For this flow. You'll need to configure the set `connection_type` to `azure_ad`. Add the details for `azure_endpoint`, `model_deployment_name`, and `api_version`. Additonally, you'll to assign the Azure Cognitive Openai User role to any user that is going to consume the resource.
+- **azure_ad**: For this flow. You'll need to configure the set `connection_type` to `azure_ad`. Add the details for `azure_endpoint`, `model_deployment_name`, and `api_version`. Additonally, you'll to assign the **Cognitive Services OpenAI User** role to any user that is going to consume the resource.
 
     ```yaml
     connection_type: "azure_ad"
@@ -138,7 +138,6 @@ There are two common ways to authenticate with AOAI resources. The first one is 
 
 >[!NOTE]
 >When using Ollama, it mounts the model to memory the first time you run it, which can take some time. After 5 minutes of inactivity, Ollama offloads the model.
-
 
 Here is an example to run `ollama` in your `devcontainer` and pulling phi3.5 image.
 
