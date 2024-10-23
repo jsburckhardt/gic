@@ -16,6 +16,7 @@ var (
 	hash               string
 	verbose            bool
 	createSampleConfig bool
+	pullRequest        bool
 	rootCmd            = &cobra.Command{
 		Use:   "gic",
 		Short: "gic",
@@ -58,6 +59,7 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 		l.Debug("Finish creating sample configuration")
 		return nil
 	}
+
 	l.Debug("Started executing command")
 	l.Debug("Start loading configuration")
 	cfg, err := config.LoadConfig()
@@ -65,12 +67,24 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 		return err
 	}
 	l.Debug("Finish loading configuration")
-	l.Debug("Start getting staged changes")
-	gitDiff, err := git.GetStagedChanges()
-	if err != nil {
-		return err
+
+	var gitDiff string
+	if pullRequest {
+		l.Debug("Start getting diff with main branch")
+		gitDiff, err = git.GetDiffWithMain()
+		if err != nil {
+			return err
+		}
+		l.Debug("Finish getting diff with main branch")
+	} else {
+		l.Debug("Start getting staged changes")
+		gitDiff, err = git.GetStagedChanges()
+		if err != nil {
+			return err
+		}
+		l.Debug("Finish getting staged changes")
 	}
-	l.Debug("Finish getting staged changes")
+
 	l.Debug("Start generating commit message")
 	commitMessage, err := llm.GenerateCommitMessage(cfg, gitDiff)
 	if err != nil {
@@ -84,7 +98,7 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 
 	l.Info("commit message: " + commitMessage)
 	l.Debug("Finish validating commit message includes changes")
-	return git.Commit(commitMessage, cfg)
+	return git.Commit(commitMessage, cfg, pullRequest)
 }
 
 func setVersion() {
@@ -102,4 +116,13 @@ func init() {
 		false,
 		"create a sample configuration file in the running directory",
 	)
+	// create a flag for --pull-request or -p default false and is used to generate a message against source main
+	rootCmd.PersistentFlags().BoolVarP(
+		&pullRequest,
+		"pull-request",
+		"p",
+		false,
+		"generate a commit message comparing against main branch",
+	)
+
 }
