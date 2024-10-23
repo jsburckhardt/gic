@@ -12,6 +12,18 @@
             "program": "main.go",
             "cwd": "/workspaces/gic",
             "envFile": "${workspaceFolder}/.env",
+        },
+        {
+            "name": "pr",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "main.go",
+            "args": [
+                "-p",
+            ],
+            "cwd": "/workspaces/gic",
+            "envFile": "${workspaceFolder}/.env",
         }
     ]
 }
