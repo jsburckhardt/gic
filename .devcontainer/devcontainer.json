@@ -2,7 +2,7 @@
 	"name": "gic",
 	"image": "mcr.microsoft.com/devcontainers/go:dev-1.23",
 	"runArgs": [
-		"--gpus", "all"
+		// "--gpus", "all"
 	],
 	"hostRequirements": {
 	  "cpus": 4,
@@ -17,9 +17,9 @@
 		"ghcr.io/devcontainers/features/azure-cli:1": {
 			"installBicep": true
 		},
-        "ghcr.io/prulloac/devcontainer-features/ollama:1": {
-            "pull": "phi3.5"
-        },
+        // "ghcr.io/prulloac/devcontainer-features/ollama:1": {
+        //     "pull": "phi3.5"
+        // },
 		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
 
 	},
