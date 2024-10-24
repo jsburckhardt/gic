@@ -1,3 +1,16 @@
+# [3.0.0](https://github.com/jsburckhardt/gic/compare/v2.4.0...v3.0.0) (2024-10-24)
+
+
+### Features
+
+* **cmd, git:** add support for generating commit messages based on the main branch for pull requests ([3c1e8bb](https://github.com/jsburckhardt/gic/commit/3c1e8bbc087cb31cb3466da5e742eb5fcec8cd19))
+* **git:** enhance diff handling based on configuration ([836c7dd](https://github.com/jsburckhardt/gic/commit/836c7dd85880ce95d049d3f24fe3f0955b1a0d6a))
+
+
+### BREAKING CHANGES
+
+* **git:** Changes the `Commit` function by removing the `pr` parameter. Now, the function relies solely on the `ShouldCommit` and `PR` fields in the configuration.
+
 # [2.4.0](https://github.com/jsburckhardt/gic/compare/v2.3.0...v2.4.0) (2024-09-13)
 
 
