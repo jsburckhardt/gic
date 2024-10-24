@@ -21,8 +21,9 @@ type Config struct {
 	LLMInstructions     string `mapstructure:"llm_instructions"`
 	ConnectionType      string `mapstructure:"connection_type"`
 	AzureEndpoint       string `mapstructure:"azure_endpoint"`
-	ShouldCommit        bool   `mapstructure:"should_commit"`
 	Tokens              int    `mapstructure:"tokens"`
+	ShouldCommit        bool   `mapstructure:"should_commit"`
+	PR                  bool   `mapstructure:"pr"`
 }
 
 // LoadConfig loads the configuration from a YAML file and
