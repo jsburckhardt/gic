@@ -68,21 +68,12 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 	}
 	l.Debug("Finish loading configuration")
 
-	var gitDiff string
-	if pullRequest {
-		l.Debug("Start getting diff with main branch")
-		gitDiff, err = git.GetDiffWithMain()
-		if err != nil {
-			return err
-		}
-		l.Debug("Finish getting diff with main branch")
-	} else {
-		l.Debug("Start getting staged changes")
-		gitDiff, err = git.GetStagedChanges()
-		if err != nil {
-			return err
-		}
-		l.Debug("Finish getting staged changes")
+	// Include the pullRequest flag in the configuration
+	cfg.PR = pullRequest
+
+	gitDiff, err := git.GetGitDiff(cfg)
+	if err != nil {
+		return err
 	}
 
 	l.Debug("Start generating commit message")
@@ -93,12 +84,8 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 	if commitMessage == "### NO STAGED CHAGES ###" {
 		return nil
 	}
-	l.Debug("Finish generating commit message")
-	l.Debug("Start validating commit message includes changes")
-
 	l.Info("commit message: " + commitMessage)
-	l.Debug("Finish validating commit message includes changes")
-	return git.Commit(commitMessage, cfg, pullRequest)
+	return git.Commit(commitMessage, cfg)
 }
 
 func setVersion() {
@@ -124,5 +111,4 @@ func init() {
 		false,
 		"generate a commit message comparing against main branch",
 	)
-
 }
