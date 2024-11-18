@@ -1,4 +1,3 @@
-// Package llm provides functionality for interacting with the Language Learning Model.
 package llm
 
 import (
@@ -23,39 +22,30 @@ import (
 const emptyString = ""
 const responseMessage = 0
 
-// GenerateCommitMessage generates a commit message based on the provided configuration and diff.
-// It takes a config.Config object and a string representing the diff as input.
-// The function returns a string containing the generated commit message and an error if any.
-// The commit message is generated based on the connection type specified in the config.Config object.
-// Supported connection types are "azure", "azure_ad", and "openai".
-// If the connection type is not supported, the function returns an empty string and an error
-// indicating the unsupported connection type.
-func GenerateCommitMessage(cfg config.Config, diff string) (string, error) {
+func GenerateCommitMessage(cfg config.Config, connCfg config.ConnectionConfig, diff string) (string, error) {
 	l := logger.GetLogger()
 	l.Info("Generating commit message")
-	// if diff is empty finish
 	if diff == emptyString {
 		l.Info("No files staged for commit")
 		return "### NO STAGED CHAGES ###", nil
 	}
 
 	apikey := os.Getenv("API_KEY")
-	switch cfg.ConnectionType {
+	switch connCfg.ConnectionType {
 	case "azure":
-		return GenerateCommitMessageAzure(apikey, cfg, diff)
+		return GenerateCommitMessageAzure(apikey, connCfg, diff)
 	case "azure_ad":
-		return GenerateCommitMessageAzureAD(cfg, diff, l)
+		return GenerateCommitMessageAzureAD(connCfg, diff, l)
 	case "openai":
-		return GenerateCommitMessageOpenAI(apikey, cfg, diff)
+		return GenerateCommitMessageOpenAI(apikey, connCfg, diff)
 	case "ollama":
-		return GenerateCommitMessageOllama(cfg, diff)
+		return GenerateCommitMessageOllama(connCfg, diff)
 	default:
-		return emptyString, fmt.Errorf("unsupported connection type: %s", cfg.ConnectionType)
+		return emptyString, fmt.Errorf("unsupported connection type: %s", connCfg.ConnectionType)
 	}
 }
 
-// GenerateCommitMessageOllama generates a commit message using an LLM hosted in Ollama.
-func GenerateCommitMessageOllama(cfg config.Config, diff string) (string, error) {
+func GenerateCommitMessageOllama(connCfg config.ConnectionConfig, diff string) (string, error) {
 	client, err := api.ClientFromEnvironment()
 	if err != nil {
 		return emptyString, err
@@ -64,7 +54,7 @@ func GenerateCommitMessageOllama(cfg config.Config, diff string) (string, error)
 	messages := []api.Message{
 		{
 			Role:    "system",
-			Content: cfg.LLMInstructions,
+			Content: connCfg.LLMInstructions,
 		},
 		{
 			Role:    "user",
@@ -74,7 +64,7 @@ func GenerateCommitMessageOllama(cfg config.Config, diff string) (string, error)
 
 	ctx := context.Background()
 	req := &api.ChatRequest{
-		Model:    cfg.ModelDeploymentName,
+		Model:    connCfg.ModelDeploymentName,
 		Messages: messages,
 		Stream:   func(b bool) *bool { return &b }(false),
 	}
@@ -91,25 +81,18 @@ func GenerateCommitMessageOllama(cfg config.Config, diff string) (string, error)
 	return commitMessage, nil
 }
 
-// GenerateCommitMessageAzure generates a commit message using the Azure Language Learning Model.
-// It takes an API key, a config.Config object, and a string representing the diff as input.
-func GenerateCommitMessageAzure(apikey string, cfg config.Config, diff string) (string, error) {
+func GenerateCommitMessageAzure(apikey string, connCfg config.ConnectionConfig, diff string) (string, error) {
 	keyCredential := azcore.NewKeyCredential(apikey)
-	client, err := azopenai.NewClientWithKeyCredential(cfg.AzureEndpoint, keyCredential, nil)
+	client, err := azopenai.NewClientWithKeyCredential(connCfg.AzureEndpoint, keyCredential, nil)
 
 	if err != nil {
 		return emptyString, err
 	}
 
-	return getChatCompletions(cfg, client, diff)
+	return getChatCompletions(connCfg, client, diff)
 }
 
-// GenerateCommitMessageAzureAD generates a commit message using
-// the Azure Language Learning Model with Azure Active Directory
-// authentication.
-// It takes a config.Config object and a string representing
-// the diff as input.
-func GenerateCommitMessageAzureAD(cfg config.Config, diff string, l *logger.Logger) (string, error) {
+func GenerateCommitMessageAzureAD(connCfg config.ConnectionConfig, diff string, l *logger.Logger) (string, error) {
 	l.Debug("GenerateCommitMessageAzureAD")
 	l.Debug("obtaining token credential")
 	tokenCredential, err := azidentity.NewDefaultAzureCredential(nil)
@@ -117,26 +100,24 @@ func GenerateCommitMessageAzureAD(cfg config.Config, diff string, l *logger.Logg
 		l.Error("failed getting token", "error", err)
 		return emptyString, err
 	}
-	client, err := azopenai.NewClient(cfg.AzureEndpoint, tokenCredential, nil)
+	client, err := azopenai.NewClient(connCfg.AzureEndpoint, tokenCredential, nil)
 
 	if err != nil {
 		return emptyString, err
 	}
 
-	return getChatCompletions(cfg, client, diff)
+	return getChatCompletions(connCfg, client, diff)
 }
 
-// GenerateCommitMessageOpenAI generates a commit message using the OpenAI Language Learning Model.
-// It takes an API key, a config.Config object, and a string representing the diff as input.
-func GenerateCommitMessageOpenAI(apiKey string, cfg config.Config, diff string) (string, error) {
+func GenerateCommitMessageOpenAI(apiKey string, connCfg config.ConnectionConfig, diff string) (string, error) {
 	client := openai.NewClient(
-		option.WithAPIKey(apiKey), // defaults to os.LookupEnv("OPENAI_API_KEY")
+		option.WithAPIKey(apiKey),
 	)
 	chatCompletion, err := client.Chat.Completions.New(context.TODO(), openai.ChatCompletionNewParams{
 		Messages: openai.F([]openai.ChatCompletionMessageParamUnion{
 			openai.UserMessage(diff),
 		}),
-		Model: openai.F(cfg.ModelDeploymentName),
+		Model: openai.F(connCfg.ModelDeploymentName),
 	})
 	if err != nil {
 		panic(err.Error())
@@ -144,12 +125,12 @@ func GenerateCommitMessageOpenAI(apiKey string, cfg config.Config, diff string) 
 	return chatCompletion.Choices[responseMessage].Message.Content, nil
 }
 
-func getChatCompletions(cfg config.Config, client *azopenai.Client, diff string) (string, error) {
-	maxTokens := int32(cfg.Tokens)
+func getChatCompletions(connCfg config.ConnectionConfig, client *azopenai.Client, diff string) (string, error) {
+	maxTokens := int32(connCfg.Tokens)
 
 	messages := []azopenai.ChatRequestMessageClassification{
 		&azopenai.ChatRequestSystemMessage{
-			Content: to.Ptr(cfg.LLMInstructions),
+			Content: to.Ptr(connCfg.LLMInstructions),
 		},
 		&azopenai.ChatRequestUserMessage{
 			Content: azopenai.NewChatRequestUserMessageContent("git commit diff: " + diff),
@@ -158,7 +139,7 @@ func getChatCompletions(cfg config.Config, client *azopenai.Client, diff string)
 
 	resp, err := client.GetChatCompletions(context.TODO(), azopenai.ChatCompletionsOptions{
 		Messages:       messages,
-		DeploymentName: &(cfg.ModelDeploymentName),
+		DeploymentName: &(connCfg.ModelDeploymentName),
 		MaxTokens:      &maxTokens,
 	}, nil)
 

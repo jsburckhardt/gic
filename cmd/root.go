@@ -1,4 +1,3 @@
-// Package cmd provides the command-line interface for the gic application.
 package cmd
 
 import (
@@ -62,7 +61,7 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 
 	l.Debug("Started executing command")
 	l.Debug("Start loading configuration")
-	cfg, err := config.LoadConfig()
+	cfg, connCfg, err := config.LoadConfig()
 	if err != nil {
 		return err
 	}
@@ -77,7 +76,7 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 	}
 
 	l.Debug("Start generating commit message")
-	commitMessage, err := llm.GenerateCommitMessage(cfg, gitDiff)
+	commitMessage, err := llm.GenerateCommitMessage(cfg, connCfg, gitDiff)
 	if err != nil {
 		return err
 	}

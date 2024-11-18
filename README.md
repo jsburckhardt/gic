@@ -71,27 +71,30 @@ llm_instructions: |
   refactor(auth): simplify token validation logic
   test(auth): add unit tests for login functionality
   perf(core): improve rendering performance by optimizing the DOM updates
+```
 
-############################################
-##### sample ollama
-# connection_type: "ollama"
-# azure_endpoint: "http://127.0.0.1:11434/"
-# model_deployment_name: "phi3.5"
+## Setting Environment Variables
 
-############################################
-# sample azure
-# connection_type: "azure"
-# azure_endpoint: "https://generic-aoai-01.openai.azure.com/"
-# model_deployment_name: "gpt-4o-mini"
+To configure the LLM connection details, you need to set the following environment variables:
 
-############################################
-##### sample azure_ad
-connection_type: "azure_ad"
-azure_endpoint: "https://generic-aoai-01.openai.azure.com/"
-model_deployment_name: "gpt-4o-mini"
-should_commit: true # this will not only print the commit message but also commit the changes
-tokens: 4000
-api_version: "2024-02-15-preview"
+- `MODEL_DEPLOYMENT_NAME`: The name of the model deployment.
+- `API_VERSION`: The API version to use.
+- `CONNECTION_TYPE`: The type of connection (e.g., "azure", "azure_ad", "openai", "ollama").
+- `AZURE_ENDPOINT`: The Azure endpoint (required for "azure" and "azure_ad" connection types).
+- `API_KEY`: The API key (required for "azure" and "openai" connection types).
+- `TOKENS`: The number of tokens to use (default is 4000).
+
+You can set these environment variables in your terminal or in a `.env` file in the root of your project.
+
+Example `.env` file:
+
+```env
+MODEL_DEPLOYMENT_NAME=gpt-4o
+API_VERSION=2024-02-15-preview
+CONNECTION_TYPE=azure_ad
+AZURE_ENDPOINT=https://<endpoint>.openai.azure.com/
+API_KEY=<your_api_key>
+TOKENS=4000
 ```
 
 ## Customizing the config
