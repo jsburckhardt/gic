@@ -1,3 +1,4 @@
+// Package cmd provides the command-line interface for the gic application.
 package cmd
 
 import (

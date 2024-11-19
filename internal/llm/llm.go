@@ -10,7 +10,6 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
@@ -122,7 +121,7 @@ func getChatCompletions(cfg config.Config, client *azopenai.Client, diff string)
 	messages := []azopenai.ChatRequestMessageClassification{
 		&azopenai.ChatRequestSystemMessage{
 
-			Content: to.Ptr(cfg.LLMInstructions),
+			Content: azopenai.NewChatRequestSystemMessageContent(cfg.LLMInstructions),
 		},
 		&azopenai.ChatRequestUserMessage{
 			Content: azopenai.NewChatRequestUserMessageContent("git commit diff: " + diff),
