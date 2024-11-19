@@ -25,9 +25,3 @@ llm_instructions: |
   refactor(auth): simplify token validation logic
   test(auth): add unit tests for login functionality
   perf(core): improve rendering performance by optimizing the DOM updates
-connection_type: "azure_ad" # can be azure_ad, azure or openai -> if it is azure/openai you'll need to set the API_KEY environment variable. Also, if it azure_ad/azure you need to add the endpoint config
-azure_endpoint: "https://<my_resource>.openai.azure.com/"
-commit: false
-tokens: 4000 # check token limits for the model
-model_deployment_name: "gpt-4o"
-api_version: "2024-02-15-preview"

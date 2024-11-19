@@ -1,4 +1,3 @@
-// Package cmd provides the command-line interface for the gic application.
 package cmd
 
 import (
@@ -16,6 +15,7 @@ var (
 	hash               string
 	verbose            bool
 	createSampleConfig bool
+	createSampleDotEnv bool
 	pullRequest        bool
 	rootCmd            = &cobra.Command{
 		Use:   "gic",
@@ -59,6 +59,15 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 		l.Debug("Finish creating sample configuration")
 		return nil
 	}
+	if createSampleDotEnv {
+		l.Debug("Started creating sample dotenv")
+		err := config.CreateSampleDotEnv()
+		if err != nil {
+			return err
+		}
+		l.Debug("Finish creating sample dotenv")
+		return nil
+	}
 
 	l.Debug("Started executing command")
 	l.Debug("Start loading configuration")
@@ -96,6 +105,13 @@ func setVersion() {
 func init() {
 	cobra.OnInitialize()
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "set logging level to verbose")
+	rootCmd.PersistentFlags().BoolVarP(
+		&createSampleDotEnv,
+		"create-sample-dotenv",
+		"e",
+		false,
+		"create a sample dotenv gic.sample.env file in the running directory",
+	)
 	rootCmd.PersistentFlags().BoolVarP(
 		&createSampleConfig,
 		"create-sample-config",
