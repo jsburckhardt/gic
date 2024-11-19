@@ -118,7 +118,6 @@ func GenerateCommitMessageOpenAI(cfg config.Config, diff string) (string, error)
 }
 
 func getChatCompletions(cfg config.Config, client *azopenai.Client, diff string) (string, error) {
-	// maxTokens := int32(cfg.ConnectionConfig.Tokens)
 
 	messages := []azopenai.ChatRequestMessageClassification{
 		&azopenai.ChatRequestSystemMessage{
@@ -133,7 +132,6 @@ func getChatCompletions(cfg config.Config, client *azopenai.Client, diff string)
 	resp, err := client.GetChatCompletions(context.TODO(), azopenai.ChatCompletionsOptions{
 		Messages:       messages,
 		DeploymentName: &(cfg.ConnectionConfig.AzureOpenAIDeploymentName),
-		// MaxTokens:      &maxTokens,
 	}, nil)
 
 	if err != nil {

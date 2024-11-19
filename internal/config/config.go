@@ -4,15 +4,12 @@ import (
 	"fmt"
 	"gic/internal/logger"
 	"os"
-	"strconv"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
 const emptyString = ""
-const zeroTokens = 0
-const defaultTokens = 4000
 const defaultInstructions = "You are a helpful assistant, that helps generating commit messages based on git diffs."
 const defaultOpenAIDeploymentName = "gpt-4o-mini"
 const defaultOllamaDeploymentName = "phi3"
@@ -36,7 +33,6 @@ type ConnectionConfig struct {
 	OllamaAPIKey              string
 	OllamaAPIBase             string
 	OllamaDeploymentName      string
-	Tokens                    int
 }
 
 func LoadConfig() (Config, error) {
@@ -74,11 +70,6 @@ func loadConnectionConfigFromEnv() ConnectionConfig {
 	if err := godotenv.Load(); err != nil {
 		l.Warn("No .env file found or unable to load it. Using environment variables")
 	}
-	tokensStr := os.Getenv("TOKENS")
-	tokens, err := strconv.Atoi(tokensStr)
-	if err != nil {
-		tokens = defaultTokens // default value
-	}
 	openAIDeploymentName := os.Getenv("OPENAI_DEPLOYMENT_NAME")
 	if openAIDeploymentName == emptyString {
 		openAIDeploymentName = defaultOpenAIDeploymentName
@@ -99,7 +90,6 @@ func loadConnectionConfigFromEnv() ConnectionConfig {
 		OllamaAPIKey:              os.Getenv("OLLAMA_API_KEY"),
 		OllamaAPIBase:             os.Getenv("OLLAMA_API_BASE"),
 		OllamaDeploymentName:      ollamaDeploymentName,
-		Tokens:                    tokens,
 	}
 }
 
@@ -191,8 +181,7 @@ AZURE_OPENAI_ENDPOINT=https://your-azure-endpoint # Required if SERVICE_PROVIDER
 AZURE_OPENAI_DEPLOYMENT_NAME=your-deployment-name # Required if SERVICE_PROVIDER=azure
 OLLAMA_API_KEY=your_ollama_api_key # Required if SERVICE_PROVIDER=ollama
 OLLAMA_API_BASE=https://api.ollama.com/v1 # Required if SERVICE_PROVIDER=ollama
-OLLAMA_DEPLOYMENT_NAME=phi3 # Value for Ollama deployment name defaults to phi3
-TOKENS=4000 # Number of tokens to use for OpenAI API defaults to 4000`
+OLLAMA_DEPLOYMENT_NAME=phi3 # Value for Ollama deployment name defaults to phi3`
 	file, err := os.Create("sample.gic.env")
 	if err != nil {
 		return err
@@ -204,4 +193,3 @@ TOKENS=4000 # Number of tokens to use for OpenAI API defaults to 4000`
 	l.Debug(".env configuration created successfully")
 	return nil
 }
-
