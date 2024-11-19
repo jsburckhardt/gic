@@ -3,3 +3,6 @@ lint:
 
 fmt:
 	gofmt -l -s .
+
+gic:
+	go run main.go
