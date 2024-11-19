@@ -75,6 +75,11 @@ func (l *Logger) Error(msg string, keysAndValues ...any) {
 	l.logger.Error(generateLogMessage(msg), keysAndValues...)
 }
 
+// Error logs an error message with the correct source
+func (l *Logger) Warn(msg string, keysAndValues ...any) {
+	l.logger.Warn(generateLogMessage(msg), keysAndValues...)
+}
+
 func generateLogMessage(msg string) string {
 	callerInfo := getCallerInfo()
 	return fmt.Sprintf("[%s] %s", callerInfo, msg)
