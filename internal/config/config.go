@@ -18,10 +18,10 @@ type Config struct {
 	LLMInstructions  string           `mapstructure:"llm_instructions"`
 	ShouldCommit     bool             `mapstructure:"should_commit"`
 	PR               bool             `mapstructure:"pr"`
-	ConnectionConfig ConnectionConfig `mapstructure:"connection_config"`
+	ConnectionConfig connectionConfig `mapstructure:"connection_config"`
 }
 
-type ConnectionConfig struct {
+type connectionConfig struct {
 	ServiceProvider           string
 	OpenAIAPIKey              string
 	OpenAIAPIBase             string
@@ -64,7 +64,7 @@ func LoadConfig() (Config, error) {
 	return cfg, nil
 }
 
-func loadConnectionConfigFromEnv() ConnectionConfig {
+func loadConnectionConfigFromEnv() connectionConfig {
 	l := logger.GetLogger()
 	l.Debug("Loading connection config from .env file")
 	if err := godotenv.Load(); err != nil {
@@ -78,7 +78,7 @@ func loadConnectionConfigFromEnv() ConnectionConfig {
 	if ollamaDeploymentName == emptyString {
 		ollamaDeploymentName = defaultOllamaDeploymentName
 	}
-	return ConnectionConfig{
+	return connectionConfig{
 		ServiceProvider:           os.Getenv("SERVICE_PROVIDER"),
 		OpenAIAPIKey:              os.Getenv("OPENAI_API_KEY"),
 		OpenAIAPIBase:             os.Getenv("OPENAI_API_BASE"),
@@ -108,7 +108,7 @@ func validateConfig(cfg Config) error {
 	return nil
 }
 
-func validateConnectionConfig(connCfg ConnectionConfig) error {
+func validateConnectionConfig(connCfg connectionConfig) error {
 	l := logger.GetLogger()
 	l.Debug("Validating connection config from environment")
 	switch connCfg.ServiceProvider {
