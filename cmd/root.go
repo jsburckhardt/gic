@@ -16,6 +16,7 @@ var (
 	hash               string
 	verbose            bool
 	createSampleConfig bool
+	createSampleDotEnv bool
 	pullRequest        bool
 	rootCmd            = &cobra.Command{
 		Use:   "gic",
@@ -51,13 +52,10 @@ func Execute(version, commit string) error {
 func executeCmd(_ *cobra.Command, _ []string) error {
 	l := logger.GetLogger()
 	if createSampleConfig {
-		l.Debug("Started creating sample configuration")
-		err := config.CreateSampleConfig()
-		if err != nil {
-			return err
-		}
-		l.Debug("Finish creating sample configuration")
-		return nil
+		return handleCreateSampleConfig(l)
+	}
+	if createSampleDotEnv {
+		return handleCreateSampleDotEnv(l)
 	}
 
 	l.Debug("Started executing command")
@@ -88,6 +86,28 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 	return git.Commit(commitMessage, cfg)
 }
 
+// handleCreateSampleConfig creates a sample configuration file and logs the process.
+func handleCreateSampleConfig(l *logger.Logger) error {
+	l.Debug("Started creating sample configuration")
+	err := config.CreateSampleConfig()
+	if err != nil {
+		return err
+	}
+	l.Debug("Finish creating sample configuration")
+	return nil
+}
+
+// handleCreateSampleDotEnv creates a sample dotenv file and logs the process.
+func handleCreateSampleDotEnv(l *logger.Logger) error {
+	l.Debug("Started creating sample dotenv")
+	err := config.CreateSampleDotEnv()
+	if err != nil {
+		return err
+	}
+	l.Debug("Finish creating sample dotenv")
+	return nil
+}
+
 func setVersion() {
 	template := fmt.Sprintf("gic version: %s commit: %s \n", rootCmd.Version, hash)
 	rootCmd.SetVersionTemplate(template)
@@ -96,6 +116,13 @@ func setVersion() {
 func init() {
 	cobra.OnInitialize()
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "set logging level to verbose")
+	rootCmd.PersistentFlags().BoolVarP(
+		&createSampleDotEnv,
+		"create-sample-dotenv",
+		"e",
+		false,
+		"create a sample dotenv gic.sample.env file in the running directory",
+	)
 	rootCmd.PersistentFlags().BoolVarP(
 		&createSampleConfig,
 		"create-sample-config",

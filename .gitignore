@@ -35,9 +35,6 @@
 
 # project
 .env
-.gic
-.gic.yaml
-.gic.yml
 gic
 
 dist/

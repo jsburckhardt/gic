@@ -36,6 +36,14 @@ There are different options to create the config file.
     gic --create-sample-config
     ```
 
+### Generate a sample .env file
+
+You can generate a sample .env file using the command line `gic`. Run the following command in your terminal:
+
+```bash
+gic --create-sample-dotenv
+```
+
 ## Config file sample
 
 ```yaml
@@ -71,27 +79,40 @@ llm_instructions: |
   refactor(auth): simplify token validation logic
   test(auth): add unit tests for login functionality
   perf(core): improve rendering performance by optimizing the DOM updates
+```
 
-############################################
-##### sample ollama
-# connection_type: "ollama"
-# azure_endpoint: "http://127.0.0.1:11434/"
-# model_deployment_name: "phi3.5"
+## Setting Environment Variables
 
-############################################
-# sample azure
-# connection_type: "azure"
-# azure_endpoint: "https://generic-aoai-01.openai.azure.com/"
-# model_deployment_name: "gpt-4o-mini"
+To configure the LLM connection details, you need to set the following environment variables:
 
-############################################
-##### sample azure_ad
-connection_type: "azure_ad"
-azure_endpoint: "https://generic-aoai-01.openai.azure.com/"
-model_deployment_name: "gpt-4o-mini"
-should_commit: true # this will not only print the commit message but also commit the changes
-tokens: 4000
-api_version: "2024-02-15-preview"
+- `SERVICE_PROVIDER`: The service provider (e.g., "openai", "azure", "ollama").
+- `OPENAI_API_KEY`: The OpenAI API key (required if `SERVICE_PROVIDER=openai`).
+- `OPENAI_API_BASE`: The OpenAI API base URL (required if `SERVICE_PROVIDER=openai`).
+- `OPENAI_DEPLOYMENT_NAME`: The OpenAI deployment name (default is "gpt-4o-mini").
+- `AZURE_AUTHENTICATION_TYPE`: The Azure authentication type (e.g., "api_key", "azure_ad").
+- `AZURE_OPENAI_API_KEY`: The Azure OpenAI API key (required if `SERVICE_PROVIDER=azure` and `AZURE_AUTHENTICATION_TYPE=api_key`).
+- `AZURE_OPENAI_ENDPOINT`: The Azure OpenAI endpoint (required if `SERVICE_PROVIDER=azure`).
+- `AZURE_OPENAI_DEPLOYMENT_NAME`: The Azure OpenAI deployment name (required if `SERVICE_PROVIDER=azure`).
+- `OLLAMA_API_KEY`: The Ollama API key (required if `SERVICE_PROVIDER=ollama`).
+- `OLLAMA_API_BASE`: The Ollama API base URL (required if `SERVICE_PROVIDER=ollama`).
+- `OLLAMA_DEPLOYMENT_NAME`: The Ollama deployment name (default is "phi3").
+
+You can set these environment variables in your terminal or in a `.env` file in the root of your project.
+
+Example `.env` file:
+
+```env
+SERVICE_PROVIDER=openai
+OPENAI_API_KEY=your_openai_api_key
+OPENAI_API_BASE=https://api.openai.com/v1
+OPENAI_DEPLOYMENT_NAME=gpt-4o-mini
+AZURE_AUTHENTICATION_TYPE=api_key
+AZURE_OPENAI_API_KEY=your_azure_openai_api_key
+AZURE_OPENAI_ENDPOINT=https://your-azure-endpoint
+AZURE_OPENAI_DEPLOYMENT_NAME=your-deployment-name
+OLLAMA_API_KEY=your_ollama_api_key
+OLLAMA_API_BASE=https://api.ollama.com/v1
+OLLAMA_DEPLOYMENT_NAME=phi3
 ```
 
 ## Customizing the config
@@ -100,38 +121,93 @@ api_version: "2024-02-15-preview"
 
 There are two common ways to authenticate with AOAI resources. The first one is by using a **api_key** and the second one is by using an **azure_ad** token.
 
-- **api_key**: For this flow. You'll need to configure the set `connection_type` to `azure`. Add the details for `azure_endpoint`, `tokens`, `model_deployment_name`, and `api_version`. Additonally you'll need to add the environment variable `API_KEY` with the value of the key.
+- **api_key**: For this flow. You'll need to configure the set `SERVICE_PROVIDER` to `azure`. Add the details for `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT_NAME`, and `AZURE_AUTHENTICATION_TYPE`. Additionally, you'll need to add the environment variable `AZURE_OPENAI_API_KEY` with the value of the key.
 
     ```yaml
     # .gic
-    connection_type: "azure"
-    azure_endpoint: "https://<endpoint>.openai.azure.com/"
-    model_deployment_name: "<model name>"
-    api_version: "<api version>"
-    tokens: 4000
-    commit: false
     llm_instructions: |
         - Generate a commit message based on the staged files
         - follow semantic release guidelines
     ```
+
+  #### Connection config
+
+  - In the terminal option
 
     ```bash
     # In the terminal
-    export API_KEY=<api_key>
+    export AZURE_OPENAI_API_KEY=<api_key>
+    export AZURE_OPENAI_ENDPOINT=<endpoint>
+    export AZURE_OPENAI_DEPLOYMENT_NAME=<deployment_name>
+    export AZURE_AUTHENTICATION_TYPE=api_key
     ```
 
-- **azure_ad**: For this flow. You'll need to configure the set `connection_type` to `azure_ad`. Add the details for `azure_endpoint`, `model_deployment_name`, and `api_version`. Additonally, you'll to assign the **Cognitive Services OpenAI User** role to any user that is going to consume the resource.
+  - Using the `.env` file
+
+    ```env
+    # .env
+    AZURE_OPENAI_API_KEY=<api_key>
+    AZURE_OPENAI_ENDPOINT=<endpoint>
+    AZURE_OPENAI_DEPLOYMENT_NAME=<deployment_name>
+    AZURE_AUTHENTICATION_TYPE=api_key
+    ```
+
+- **azure_ad**: For this flow. You'll need to configure the set `SERVICE_PROVIDER` to `azure`. Add the details for `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT_NAME`, and `AZURE_AUTHENTICATION_TYPE`. Additionally, you'll need to assign the **Cognitive Services OpenAI User** role to any user that is going to consume the resource.
 
     ```yaml
-    connection_type: "azure_ad"
-    azure_endpoint: "https://<endpoint>.openai.azure.com/"
-    model_deployment_name: "<model name>"
-    api_version: "<api version>"
-    tokens: 4000
-    commit: false
     llm_instructions: |
         - Generate a commit message based on the staged files
         - follow semantic release guidelines
+    ```
+
+  #### Connection config
+
+  - In the terminal option
+
+    ```bash
+    # In the terminal
+    export AZURE_OPENAI_ENDPOINT=<endpoint>
+    export AZURE_OPENAI_DEPLOYMENT_NAME=<deployment_name>
+    export AZURE_AUTHENTICATION_TYPE=azure_ad
+    ```
+
+  - Using the `.env` file
+
+    ```env
+    # .env
+    AZURE_OPENAI_ENDPOINT=<endpoint>
+    AZURE_OPENAI_DEPLOYMENT_NAME=<deployment_name>
+    AZURE_AUTHENTICATION_TYPE=azure_ad
+    ```
+
+### Using OpenAI resources
+
+For this flow, you'll need to configure the set `SERVICE_PROVIDER` to `openai`. Add the details for `OPENAI_API_BASE`, `OPENAI_DEPLOYMENT_NAME`. Additionally, you'll need to add the environment variable `OPENAI_API_KEY` with the value of the key.
+
+```yaml
+llm_instructions: |
+    - Generate a commit message based on the staged files
+    - follow semantic release guidelines
+```
+
+#### Connection config
+
+- In the terminal option
+
+    ```bash
+    # In the terminal
+    export OPENAI_API_KEY=<api_key>
+    export OPENAI_API_BASE=https://api.openai.com/v1
+    export OPENAI_DEPLOYMENT_NAME=gpt-4o-mini
+    ```
+
+- Using the `.env` file
+
+    ```env
+    # .env
+    OPENAI_API_KEY=<api_key>
+    OPENAI_API_BASE=https://api.openai.com/v1
+    OPENAI_DEPLOYMENT_NAME=gpt-4o-mini
     ```
 
 ### Using LLMs hosted in Ollama Locally in your devcontainer (or any machine)
@@ -159,14 +235,23 @@ Here is an example to run `ollama` in your `devcontainer` and pulling phi3.5 ima
 In your `.gic` config you would add:
 
 ```yaml
-connection_type: "ollama"
-azure_endpoint: "http://127.0.0.1:11434/"
-model_deployment_name: "phi3.5"
-tokens: 4000
-commit: false
 llm_instructions: |
     - Generate a commit message based on the staged files
     - follow semantic release guidelines
+```
+
+```bash
+# In the terminal
+export OLLAMA_API_KEY=<api_key>
+export OLLAMA_API_BASE=https://api.ollama.com/v1
+export OLLAMA_DEPLOYMENT_NAME=phi3
+```
+
+```env
+# .env
+OLLAMA_API_KEY=<api_key>
+OLLAMA_API_BASE=https://api.ollama.com/v1
+OLLAMA_DEPLOYMENT_NAME=phi3
 ```
 
 ## Different outputs per model
