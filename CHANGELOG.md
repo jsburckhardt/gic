@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/jsburckhardt/gic/compare/v4.0.0...v4.1.0) (2024-11-20)
+
+
+### Features
+
+* **internal/llm:** update OpenAI API key configuration for Azure integration ([149c8d1](https://github.com/jsburckhardt/gic/commit/149c8d1debc2041179fc8f04814ff086f01f6d34))
+
 # [4.0.0](https://github.com/jsburckhardt/gic/compare/v3.0.0...v4.0.0) (2024-11-20)
 
 
