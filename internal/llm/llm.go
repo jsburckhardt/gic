@@ -85,7 +85,7 @@ func GenerateCommitMessageAzure(cfg config.Config, diff string) (string, error) 
 	var err error
 
 	if cfg.ConnectionConfig.AzureAuthenticationType == "api_key" {
-		keyCredential := azcore.NewKeyCredential(cfg.ConnectionConfig.OpenAIAPIKey)
+		keyCredential := azcore.NewKeyCredential(cfg.ConnectionConfig.AzureOpenAIAPIKey)
 		client, err = azopenai.NewClientWithKeyCredential(cfg.ConnectionConfig.AzureOpenAIEndpoint, keyCredential, nil)
 	} else if cfg.ConnectionConfig.AzureAuthenticationType == "azure_ad" {
 		tokenCredential, tokenErr := azidentity.NewDefaultAzureCredential(nil)
