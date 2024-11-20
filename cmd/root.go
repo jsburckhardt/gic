@@ -52,22 +52,10 @@ func Execute(version, commit string) error {
 func executeCmd(_ *cobra.Command, _ []string) error {
 	l := logger.GetLogger()
 	if createSampleConfig {
-		l.Debug("Started creating sample configuration")
-		err := config.CreateSampleConfig()
-		if err != nil {
-			return err
-		}
-		l.Debug("Finish creating sample configuration")
-		return nil
+		return handleCreateSampleConfig(l)
 	}
 	if createSampleDotEnv {
-		l.Debug("Started creating sample dotenv")
-		err := config.CreateSampleDotEnv()
-		if err != nil {
-			return err
-		}
-		l.Debug("Finish creating sample dotenv")
-		return nil
+		return handleCreateSampleDotEnv(l)
 	}
 
 	l.Debug("Started executing command")
@@ -96,6 +84,28 @@ func executeCmd(_ *cobra.Command, _ []string) error {
 	}
 	l.Info("commit message: " + commitMessage)
 	return git.Commit(commitMessage, cfg)
+}
+
+// handleCreateSampleConfig creates a sample configuration file and logs the process.
+func handleCreateSampleConfig(l *logger.Logger) error {
+	l.Debug("Started creating sample configuration")
+	err := config.CreateSampleConfig()
+	if err != nil {
+		return err
+	}
+	l.Debug("Finish creating sample configuration")
+	return nil
+}
+
+// handleCreateSampleDotEnv creates a sample dotenv file and logs the process.
+func handleCreateSampleDotEnv(l *logger.Logger) error {
+	l.Debug("Started creating sample dotenv")
+	err := config.CreateSampleDotEnv()
+	if err != nil {
+		return err
+	}
+	l.Debug("Finish creating sample dotenv")
+	return nil
 }
 
 func setVersion() {

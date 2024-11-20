@@ -1,3 +1,4 @@
+// Package config is a package that provides the configuration for the application.
 package config
 
 import (
@@ -14,11 +15,12 @@ const defaultInstructions = "You are a helpful assistant, that helps generating 
 const defaultOpenAIDeploymentName = "gpt-4o-mini"
 const defaultOllamaDeploymentName = "phi3"
 
+// Config represents the configuration for the application.
 type Config struct {
+	ConnectionConfig connectionConfig `mapstructure:"connection_config"`
 	LLMInstructions  string           `mapstructure:"llm_instructions"`
 	ShouldCommit     bool             `mapstructure:"should_commit"`
 	PR               bool             `mapstructure:"pr"`
-	ConnectionConfig connectionConfig `mapstructure:"connection_config"`
 }
 
 type connectionConfig struct {
@@ -35,6 +37,7 @@ type connectionConfig struct {
 	OllamaDeploymentName      string
 }
 
+// LoadConfig loads the configuration from the configuration file and environment variables
 func LoadConfig() (Config, error) {
 	l := logger.GetLogger()
 	var cfg Config
@@ -101,11 +104,7 @@ func validateConfig(cfg Config) error {
 		cfg.LLMInstructions = defaultInstructions
 	}
 
-	if err := validateConnectionConfig(cfg.ConnectionConfig); err != nil {
-		return err
-	}
-
-	return nil
+	return validateConnectionConfig(cfg.ConnectionConfig)
 }
 
 func validateConnectionConfig(connCfg connectionConfig) error {
@@ -113,44 +112,63 @@ func validateConnectionConfig(connCfg connectionConfig) error {
 	l.Debug("Validating connection config from environment")
 	switch connCfg.ServiceProvider {
 	case "openai":
-		if connCfg.OpenAIAPIKey == emptyString {
-			return fmt.Errorf("OPENAI_API_KEY environment variable not set")
-		}
-		if connCfg.OpenAIAPIBase == emptyString {
-			return fmt.Errorf("OPENAI_API_BASE environment variable not set")
-		}
+		return validateOpenAIConfig(connCfg)
 	case "azure":
-		if connCfg.AzureAuthenticationType == emptyString {
-			return fmt.Errorf("AZURE_AUTHENTICATION_TYPE environment variable not set")
-		}
-		if connCfg.AzureAuthenticationType != "api_key" && connCfg.AzureAuthenticationType != "azure_ad" {
-			return fmt.Errorf("AZURE_AUTHENTICATION_TYPE must be either 'api_key' or 'azure_ad'")
-		}
-		if connCfg.AzureAuthenticationType == "api_key" && connCfg.AzureOpenAIAPIKey == emptyString {
-			return fmt.Errorf("AZURE_OPENAI_API_KEY environment variable not set for api_key authentication type")
-		}
-		if connCfg.AzureOpenAIEndpoint == emptyString {
-			return fmt.Errorf("AZURE_OPENAI_ENDPOINT environment variable not set")
-		}
-		if connCfg.AzureOpenAIDeploymentName == emptyString {
-			return fmt.Errorf("AZURE_OPENAI_DEPLOYMENT_NAME environment variable not set")
-		}
+		return validateAzureConfig(connCfg)
 	case "ollama":
-		if connCfg.OllamaAPIKey == emptyString {
-			return fmt.Errorf("OLLAMA_API_KEY environment variable not set")
-		}
-		if connCfg.OllamaAPIBase == emptyString {
-			return fmt.Errorf("OLLAMA_API_BASE environment variable not set")
-		}
-		if connCfg.OllamaDeploymentName == emptyString {
-			return fmt.Errorf("OLLAMA_DEPLOYMENT_NAME environment variable not set")
-		}
+		return validateOllamaConfig(connCfg)
 	default:
-		return fmt.Errorf("unsupported service provider. options are openai, azure or ollama. got: %s. Options are openai, azure or ollama", connCfg.ServiceProvider)
+		return fmt.Errorf(
+			"unsupported service provider. options are openai, azure or ollama. got: %s. "+
+				"Options are openai, azure or ollama",
+			connCfg.ServiceProvider,
+		)
+	}
+}
+
+func validateOpenAIConfig(connCfg connectionConfig) error {
+	if connCfg.OpenAIAPIKey == emptyString {
+		return fmt.Errorf("OPENAI_API_KEY environment variable not set")
+	}
+	if connCfg.OpenAIAPIBase == emptyString {
+		return fmt.Errorf("OPENAI_API_BASE environment variable not set")
 	}
 	return nil
 }
 
+func validateAzureConfig(connCfg connectionConfig) error {
+	if connCfg.AzureAuthenticationType == emptyString {
+		return fmt.Errorf("AZURE_AUTHENTICATION_TYPE environment variable not set")
+	}
+	if connCfg.AzureAuthenticationType != "api_key" && connCfg.AzureAuthenticationType != "azure_ad" {
+		return fmt.Errorf("AZURE_AUTHENTICATION_TYPE must be either 'api_key' or 'azure_ad'")
+	}
+	if connCfg.AzureAuthenticationType == "api_key" && connCfg.AzureOpenAIAPIKey == emptyString {
+		return fmt.Errorf("AZURE_OPENAI_API_KEY environment variable not set for api_key authentication type")
+	}
+	if connCfg.AzureOpenAIEndpoint == emptyString {
+		return fmt.Errorf("AZURE_OPENAI_ENDPOINT environment variable not set")
+	}
+	if connCfg.AzureOpenAIDeploymentName == emptyString {
+		return fmt.Errorf("AZURE_OPENAI_DEPLOYMENT_NAME environment variable not set")
+	}
+	return nil
+}
+
+func validateOllamaConfig(connCfg connectionConfig) error {
+	if connCfg.OllamaAPIKey == emptyString {
+		return fmt.Errorf("OLLAMA_API_KEY environment variable not set")
+	}
+	if connCfg.OllamaAPIBase == emptyString {
+		return fmt.Errorf("OLLAMA_API_BASE environment variable not set")
+	}
+	if connCfg.OllamaDeploymentName == emptyString {
+		return fmt.Errorf("OLLAMA_DEPLOYMENT_NAME environment variable not set")
+	}
+	return nil
+}
+
+// CreateSampleConfig creates a sample configuration file
 func CreateSampleConfig() error {
 	l := logger.GetLogger()
 	l.Debug("Creating sample configuration")
@@ -168,6 +186,7 @@ func CreateSampleConfig() error {
 	return nil
 }
 
+// CreateSampleDotEnv creates a sample dotenv file
 func CreateSampleDotEnv() error {
 	l := logger.GetLogger()
 	l.Debug("Creating sample .env configuration")
@@ -176,7 +195,7 @@ OPENAI_API_KEY=your_openai_api_key # Required if SERVICE_PROVIDER=openai
 OPENAI_API_BASE=https://api.openai.com/v1 # Required if SERVICE_PROVIDER=openai
 OPENAI_DEPLOYMENT_NAME=gpt-4o-mini # Value for OpenAI deployment name defaults to gpt-4o-mini
 AZURE_AUTHENTICATION_TYPE=api_key # api_key, azure_ad
-AZURE_OPENAI_API_KEY=your_azure_openai_api_key # Required if SERVICE_PROVIDER=azure and AZURE_AUTHENTICATION_TYPE=api_key
+AZURE_OPENAI_API_KEY=your_azure_openai_api_key # Required if SERVICE_PROVIDER=azure or AZURE_AUTHENTICATION_TYPE=api_key
 AZURE_OPENAI_ENDPOINT=https://your-azure-endpoint # Required if SERVICE_PROVIDER=azure
 AZURE_OPENAI_DEPLOYMENT_NAME=your-deployment-name # Required if SERVICE_PROVIDER=azure
 OLLAMA_API_KEY=your_ollama_api_key # Required if SERVICE_PROVIDER=ollama
@@ -186,7 +205,11 @@ OLLAMA_DEPLOYMENT_NAME=phi3 # Value for Ollama deployment name defaults to phi3`
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil {
+			l.Error("Error closing file", "error", cerr)
+		}
+	}()
 	if _, err := file.WriteString(content); err != nil {
 		return err
 	}
