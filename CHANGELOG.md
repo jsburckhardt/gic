@@ -1,3 +1,19 @@
+# [4.0.0](https://github.com/jsburckhardt/gic/compare/v3.0.0...v4.0.0) (2024-11-20)
+
+
+### Features
+
+* **cmd, config, llm, makefile:** update package documentation and improve formatting and linting ([d5e3753](https://github.com/jsburckhardt/gic/commit/d5e3753ef6d118de28cdd1a7b0b5b54d08e1241d))
+* **config:** add new configuration for gic and update instructions in README ([1018b85](https://github.com/jsburckhardt/gic/commit/1018b858848bcdddc839129d51aeac4dc6ce52de))
+* **config:** refactor configuration management and environment loading ([1d95ff1](https://github.com/jsburckhardt/gic/commit/1d95ff10afe1af46702a1af40e78bc96f2bdbd77))
+* **config:** update README and sample config for environment variables setup ([ed031f6](https://github.com/jsburckhardt/gic/commit/ed031f64f806cb171db9224c1825a3921aa77b9f))
+* **logger:** improve logging for error and warning messages ([c8e950a](https://github.com/jsburckhardt/gic/commit/c8e950acd2312cf8f1dce0dc38b106b2e70d9722))
+
+
+### BREAKING CHANGES
+
+* **config:** This refactor changes the structure of the configuration management and requires updating the environment variable setup in the deployment.
+
 # [3.0.0](https://github.com/jsburckhardt/gic/compare/v2.4.0...v3.0.0) (2024-10-24)
 
 
